@@ -11,6 +11,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        //seed api_user table
+        factory(App\ApiUser::class, 10)->create();
+
+        //seed tag table
+        factory(App\Tag::class, 10)->create();
+
+        //seed user table
+        factory(App\User::class, 10)->create()->each(function ($user) {
+            //seed question table
+            $questionCount = rand(10, 50);
+            factory(App\Question::class, $questionCount)->create(['user_id'=>$user->id])->each(function ($question, $user){
+                //seed answer table
+                $answerCount = rand(5, 10);
+                factory(App\Answer::class, $answerCount)->create(['question_id' => $question->id, 'user_id' => $user->id]);
+            });
+        });
+
+        //seed question_tag pivot table
+        $tags = App\Tag::all();
+        App\Question::all()->each(function ($question) use ($tags) {
+            $question->tags()->attach(
+                $tags->random(rand(1, 5))->pluck('id')->toArray()
+            );
+        });
     }
 }
