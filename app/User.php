@@ -2,8 +2,8 @@
 
 namespace App;
 
+use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -18,9 +18,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $activation_token
  * @property string $remember_token
  */
-class User extends Authenticatable
+class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
-    use Notifiable;
+    use Authenticatable, Authorizable;
 
     const ID = 'id';
     const NAME = 'name';
