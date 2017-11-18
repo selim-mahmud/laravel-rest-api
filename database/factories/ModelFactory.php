@@ -31,8 +31,7 @@ $factory->define(App\ApiUser::class, function (Faker\Generator $faker) {
         'name' => $faker->name,
         'user_name' => $faker->unique()->userName,
         'password' => $password ?: $password = bcrypt('password'),
-        'active' => $faker->boolean(80),
-        'remember_token' => str_random(10),
+        'active' => $faker->boolean(80)
     ];
 });
 
@@ -42,9 +41,7 @@ $factory->define(App\Tag::class, function (Faker\Generator $faker) {
         'slug' => function (array $tag) {
             return str_slug($tag['name']);
         },
-        'display_name' => $faker->unique()->text(50),
-        'active' => $faker->boolean(80),
-        'remember_token' => str_random(10),
+        'active' => $faker->boolean(80)
     ];
 });
 
@@ -73,10 +70,6 @@ $factory->define(App\Answer::class, function (Faker\Generator $faker) {
         },
         'user_id' => function() {
             return factory(App\User::class)->create()->id;
-        },
-        'title' => $faker->sentence(),
-        'slug' => function (array $question) {
-            return str_slug($question['title']);
         },
         'description' => $faker->paragraph,
         'excepted' => $faker->boolean(),

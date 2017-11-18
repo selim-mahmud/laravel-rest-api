@@ -14,7 +14,8 @@ class CreateApiUsersTable extends Migration
     public function up()
     {
         Schema::create('api_users', function (Blueprint $table) {
-            $table->increments('id');
+            $table->engine = 'InnoDB';
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('user_name')->unique();
             $table->string('password');
