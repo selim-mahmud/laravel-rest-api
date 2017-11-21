@@ -16,6 +16,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
+        'reference' => str_random(),
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = app('hash')->make('password'),
@@ -28,6 +29,7 @@ $factory->define(App\ApiUser::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
+        'reference' => str_random(),
         'name' => $faker->name,
         'user_name' => $faker->unique()->userName,
         'password' => $password ?: $password = app('hash')->make('password'),
@@ -37,6 +39,7 @@ $factory->define(App\ApiUser::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Tag::class, function (Faker\Generator $faker) {
     return [
+        'reference' => str_random(),
         'name' => $faker->unique()->text(40),
         'slug' => function (array $tag) {
             return str_slug($tag['name']);
@@ -47,6 +50,7 @@ $factory->define(App\Tag::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Question::class, function (Faker\Generator $faker) {
     return array(
+        'reference' => str_random(),
         'user_id' => function() {
             return factory(App\User::class)->create()->id;
         },
@@ -65,6 +69,7 @@ $factory->define(App\Question::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Answer::class, function (Faker\Generator $faker) {
     return array(
+        'reference' => str_random(),
         'question_id' => function() {
             return factory(App\Question::class)->create()->id;
         },
