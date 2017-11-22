@@ -1,7 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,23 +13,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 |
 */
 
-/*
- * NOTE:
- *
- * ALL ROUTES IN THIS FILE ARE ALREADY PREFIXED WITH '/api/'
- * ALL NAMESPACES ARE PREFIXED WITH \Api for all controllers
- */
-
-Route::group([
-    'prefix' => 'v1',
-    'namespace' => 'V1',
-], function () {
-
-    Route::get('users', 'UsersController@index');
-
-});
-
-// catch all route for any route under /api/
-Route::get('{path}', function($path) {
-    throw new NotFoundHttpException('Path does not exist:'.$path);
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });
