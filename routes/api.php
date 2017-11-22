@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,25 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'v1',
+    'namespace' => 'V1',
+], function () {
+
+    Route::resource('users', 'UserController');
+    //Route::get('/companies/{reference}/solar-panels', 'SolarPanelsController@getSiblings');
+    //Route::resource('/solar-panels', 'SolarPanelsController');
+    //Route::get('/companies/{reference}/batteries', 'BatteriesController@getSiblings');
+    //Route::resource('/batteries', 'BatteriesController');
 });
+
+
+// route for /api
+Route::any('/', function() {
+    throw new NotFoundHttpException('path does not exist:/');
+});
+
+// catch all route for any route under /api/
+Route::any('{path}', function($path) {
+    throw new NotFoundHttpException('Path does not exist:'.$path);
+})->where('path', '.*');
