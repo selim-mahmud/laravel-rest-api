@@ -2,84 +2,63 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ResourceApiController;
+use App\Http\Requests\ApiRequest;
+use App\Repositories\UserRepository;
+use App\Services\ApiQueryFilterHandler;
+use App\Services\ApiRelationFilterHandler;
+use App\Transformers\UserTransformer;
 
-class UserController extends Controller
+class UserController extends ResourceApiController
 {
     /**
-     * Display a listing of the resource.
+     * UserController constructor.
      *
-     * @return \Illuminate\Http\Response
+     * @param ApiRequest $request
+     * @param UserRepository $userRepository
+     * @param UserTransformer $userTransformer
+     * @param ApiQueryFilterHandler $queryFilterHandler
+     * @param ApiRelationFilterHandler $relationFilterHandler
      */
-    public function index()
-    {
-        dd('Yes');
+    public function __construct(
+        ApiRequest $request,
+        UserRepository $userRepository,
+        UserTransformer $userTransformer,
+        ApiQueryFilterHandler $queryFilterHandler,
+        ApiRelationFilterHandler $relationFilterHandler
+    ) {
+        parent::__construct(
+            $request,
+            $userRepository,
+            $userTransformer,
+            $queryFilterHandler->setFilterableFields(
+                $this->getFilterableFields()
+            ),
+            $relationFilterHandler->setRelationNames(
+                $this->getRelationNames()
+            )
+        );
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return array
      */
-    public function create()
-    {
-        //
+    protected function getFilterableFields() {
+        return [
+            'id',
+            'name',
+            'type',
+        ];
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return array
      */
-    public function store(Request $request)
-    {
-        //
-    }
+    protected function getRelationNames() {
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return [
+            'solarPanels',
+            'batteries'
+        ];
     }
 }

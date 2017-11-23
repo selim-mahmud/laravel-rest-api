@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\ApiRequest;
 use App\Repositories\ReferencedModelRepository;
 use App\Services\ApiQueryFilterHandler;
-use App\Services\ApiQueryRelationHandler;
+use App\Services\ApiRelationFilterHandler;
 use App\Transformers\Transformer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -24,7 +24,7 @@ abstract class ResourceWithParentApiController extends ModelApiController
      * @param Transformer $transformer
      * @param ReferencedModelRepository $parentRepository
      * @param ApiQueryFilterHandler $queryFilterHandler
-     * @param ApiQueryRelationHandler $queryRelationHandler
+     * @param ApiRelationFilterHandler $queryRelationHandler
      */
     function __construct(
         ApiRequest $request,
@@ -32,7 +32,7 @@ abstract class ResourceWithParentApiController extends ModelApiController
         Transformer $transformer,
         ReferencedModelRepository $parentRepository,
         ApiQueryFilterHandler $queryFilterHandler,
-        ApiQueryRelationHandler $queryRelationHandler
+        ApiRelationFilterHandler $queryRelationHandler
     ) {
         parent::__construct($request, $repository, $transformer, $queryFilterHandler, $queryRelationHandler);
         $this->parentRepository = $parentRepository;

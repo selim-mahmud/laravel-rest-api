@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
 use App\Repositories\ReferencedModelRepository;
 use App\Services\ApiQueryFilterHandler;
-use App\Services\ApiQueryRelationHandler;
+use App\Services\ApiRelationFilterHandler;
 use App\Traits\BasicApiResponses;
 use App\Transformers\Transformer;
 use Illuminate\Database\Eloquent\Model;
@@ -39,7 +39,7 @@ abstract class ApiController extends Controller
     protected $queryFilterHandler;
 
     /**
-     * @var ApiQueryRelationHandler $relationHandlerService
+     * @var ApiRelationFilterHandler $relationHandlerService
      */
     protected $relationHandlerService;
 
@@ -50,14 +50,14 @@ abstract class ApiController extends Controller
      * @param ReferencedModelRepository $repository
      * @param Transformer $transformer
      * @param ApiQueryFilterHandler $filterHandlerService
-     * @param ApiQueryRelationHandler $relationHandlerService
+     * @param ApiRelationFilterHandler $relationHandlerService
      */
     function __construct(
         ApiRequest $request,
         ReferencedModelRepository $repository,
         Transformer $transformer,
         ApiQueryFilterHandler $filterHandlerService,
-        ApiQueryRelationHandler $relationHandlerService
+        ApiRelationFilterHandler $relationHandlerService
     ) {
         $this->request = $request;
         $this->repository = $repository;
