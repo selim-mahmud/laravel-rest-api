@@ -1,21 +1,32 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\V1;
 
-use App\Company;
+use App\Transformers\Transformer;
+use App\User;
 
 class UserTransformer extends Transformer
 {
+    const ID = 'id';
+    const NAME = 'name';
+    const EMAIL = 'email';
+    const ACTIVE = 'active';
+    const ACTIVATION_TOKEN = 'activation_token';
+    const REMEMBER_TOKEN = 'remember_token';
+
     /**
      * @inheritdoc
-     * @param Company $item
+     * @param User $item
      */
     public function getTransformationMap($item) : array
     {
         return [
-            'id'    => $item->getAttribute(Company::FIELD_REFERENCE),
-            'name'  => $item->getAttribute(Company::FIELD_NAME),
-            'type'  => $item->getAttribute(Company::FIELD_TYPE),
+            self::ID    => $item->getAttribute(User::FIELD_REFERENCE),
+            self::NAME  => $item->getAttribute(User::NAME),
+            self::EMAIL  => $item->getAttribute(User::EMAIL),
+            self::ACTIVE  => $item->getAttribute(User::ACTIVE),
+            self::ACTIVATION_TOKEN  => $item->getAttribute(User::ACTIVATION_TOKEN),
+            self::REMEMBER_TOKEN  => $item->getAttribute(User::REMEMBER_TOKEN),
         ];
     }
 
@@ -25,8 +36,9 @@ class UserTransformer extends Transformer
     protected function getBasicTransformationFields(): array
     {
         return [
-            'id',
-            'name',
+            self::ID,
+            self::NAME,
+            self::EMAIL,
         ];
     }
 
@@ -36,9 +48,12 @@ class UserTransformer extends Transformer
     protected function getFullTransformationFields(): array
     {
         return [
-            'id',
-            'name',
-            'type',
+            self::ID,
+            self::NAME,
+            self::EMAIL,
+            self::ACTIVE,
+            self::ACTIVATION_TOKEN,
+            self::REMEMBER_TOKEN,
         ];
     }
 }

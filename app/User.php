@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -16,18 +17,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $active
  * @property string $activation_token
  * @property string $remember_token
+ *
+ * @property Collection questions
+ * @property Collection answers
  */
 class User extends ReferencedModel
 {
     use Authenticatable;
 
     const ID = 'id';
+    const REFERENCE = 'reference';
     const NAME = 'name';
     const EMAIL = 'email';
     const PASSWORD = 'password';
     const ACTIVE = 'active';
     const ACTIVATION_TOKEN = 'activation_token';
     const REMEMBER_TOKEN = 'remember_token';
+
+    const RELATION_QUESTIONS = 'questions';
+    const RELATION_ANSWERS = 'answers';
 
     /**
      * The attributes that are mass assignable.

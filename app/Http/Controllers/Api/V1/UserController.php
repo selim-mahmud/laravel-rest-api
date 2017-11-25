@@ -7,7 +7,8 @@ use App\Http\Requests\ApiRequest;
 use App\Repositories\UserRepository;
 use App\Services\ApiQueryFilterHandler;
 use App\Services\ApiRelationFilterHandler;
-use App\Transformers\UserTransformer;
+use App\Transformers\V1\UserTransformer;
+use App\User;
 
 class UserController extends ResourceApiController
 {
@@ -45,9 +46,12 @@ class UserController extends ResourceApiController
      */
     protected function getFilterableFields() {
         return [
-            'id',
-            'name',
-            'type',
+            User::ID,
+            User::REFERENCE,
+            User::NAME,
+            User::EMAIL,
+            User::ACTIVATION_TOKEN,
+            User::REMEMBER_TOKEN,
         ];
     }
 
@@ -57,8 +61,8 @@ class UserController extends ResourceApiController
     protected function getRelationNames() {
 
         return [
-            'solarPanels',
-            'batteries'
+            User::RELATION_QUESTIONS,
+            User::RELATION_ANSWERS
         ];
     }
 }
