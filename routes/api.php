@@ -20,6 +20,7 @@ Route::group([
 ], function () {
 
     Route::resource('users', 'UserController');
+    Route::resource('questions', 'QuestionController');
     //Route::get('/companies/{reference}/solar-panels', 'SolarPanelsController@getSiblings');
     //Route::resource('/solar-panels', 'SolarPanelsController');
     //Route::get('/companies/{reference}/batteries', 'BatteriesController@getSiblings');

@@ -11,30 +11,30 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 
-abstract class ResourceWithParentApiController extends ModelApiController
+abstract class ResourceWithParentApiController extends ResourceApiController
 {
     /** @var ReferencedModelRepository $parentRepository */
     protected $parentRepository;
 
     /**
-     * ModelWithParentApiController constructor.
+     * ResourceWithParentApiController constructor.
      *
      * @param ApiRequest $request
      * @param ReferencedModelRepository $repository
      * @param Transformer $transformer
      * @param ReferencedModelRepository $parentRepository
-     * @param ApiColumnFilterHandler $queryFilterHandler
-     * @param ApiRelationFilterHandler $queryRelationHandler
+     * @param ApiColumnFilterHandler $apiColumnFilterHandler
+     * @param ApiRelationFilterHandler $apiRelationFilterHandler
      */
     function __construct(
         ApiRequest $request,
         ReferencedModelRepository $repository,
         Transformer $transformer,
         ReferencedModelRepository $parentRepository,
-        ApiColumnFilterHandler $queryFilterHandler,
-        ApiRelationFilterHandler $queryRelationHandler
+        ApiColumnFilterHandler $apiColumnFilterHandler,
+        ApiRelationFilterHandler $apiRelationFilterHandler
     ) {
-        parent::__construct($request, $repository, $transformer, $queryFilterHandler, $queryRelationHandler);
+        parent::__construct($request, $repository, $transformer, $apiColumnFilterHandler, $apiRelationFilterHandler);
         $this->parentRepository = $parentRepository;
     }
 
