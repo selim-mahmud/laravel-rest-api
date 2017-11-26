@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\ResourceApiController;
 use App\Http\Requests\ApiRequest;
 use App\Repositories\UserRepository;
-use App\Services\ApiQueryFilterHandler;
+use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Transformers\V1\UserTransformer;
 use App\User;
@@ -18,21 +18,21 @@ class UserController extends ResourceApiController
      * @param ApiRequest $request
      * @param UserRepository $userRepository
      * @param UserTransformer $userTransformer
-     * @param ApiQueryFilterHandler $queryFilterHandler
+     * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
      */
     public function __construct(
         ApiRequest $request,
         UserRepository $userRepository,
         UserTransformer $userTransformer,
-        ApiQueryFilterHandler $queryFilterHandler,
+        ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationFilterHandler $relationFilterHandler
     ) {
         parent::__construct(
             $request,
             $userRepository,
             $userTransformer,
-            $queryFilterHandler->setFilterableFields(
+            $columnFilterHandler->setFilterableFields(
                 $this->getFilterableFields()
             ),
             $relationFilterHandler->setRelationNames(

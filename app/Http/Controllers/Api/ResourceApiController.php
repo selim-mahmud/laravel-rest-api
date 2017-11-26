@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\ApiQueryFilter;
+use App\ApiColumnFilter;
 use App\ApiQueryRelation;
 use App\ReferencedModel;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,7 +34,7 @@ abstract class ResourceApiController extends ApiController
         // Add any filters to query builder
         $filters = $this->queryFilterHandler->getCollectionOfFilters();
         if($filters) {
-            /** @var ApiQueryFilter $filter */
+            /** @var ApiColumnFilter $filter */
             foreach($filters as $filter) {
                 $builder->where(
                     $filter->column,

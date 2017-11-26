@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ApiRequest;
 use App\Repositories\ReferencedModelRepository;
-use App\Services\ApiQueryFilterHandler;
+use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Transformers\Transformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +23,7 @@ abstract class ResourceWithParentApiController extends ModelApiController
      * @param ReferencedModelRepository $repository
      * @param Transformer $transformer
      * @param ReferencedModelRepository $parentRepository
-     * @param ApiQueryFilterHandler $queryFilterHandler
+     * @param ApiColumnFilterHandler $queryFilterHandler
      * @param ApiRelationFilterHandler $queryRelationHandler
      */
     function __construct(
@@ -31,7 +31,7 @@ abstract class ResourceWithParentApiController extends ModelApiController
         ReferencedModelRepository $repository,
         Transformer $transformer,
         ReferencedModelRepository $parentRepository,
-        ApiQueryFilterHandler $queryFilterHandler,
+        ApiColumnFilterHandler $queryFilterHandler,
         ApiRelationFilterHandler $queryRelationHandler
     ) {
         parent::__construct($request, $repository, $transformer, $queryFilterHandler, $queryRelationHandler);

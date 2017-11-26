@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @package App
  * @property int $id
+ * @property string $reference
  * @property string $name
  * @property string $email
  * @property string $password

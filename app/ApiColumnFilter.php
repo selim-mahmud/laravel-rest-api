@@ -2,7 +2,7 @@
 
 namespace App;
 
-class ApiQueryFilter
+class ApiColumnFilter
 {
     /**
      * Column
@@ -29,7 +29,7 @@ class ApiQueryFilter
     var $value;
 
     /**
-     * ApiQueryFilter constructor.
+     * ApiColumnFilter constructor.
      *
      * @param array $filterArray
      */

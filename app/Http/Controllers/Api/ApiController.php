@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
 use App\Repositories\ReferencedModelRepository;
-use App\Services\ApiQueryFilterHandler;
+use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Traits\BasicApiResponses;
 use App\Transformers\Transformer;
@@ -34,7 +34,7 @@ abstract class ApiController extends Controller
     protected $repository;
 
     /**
-     * @var ApiQueryFilterHandler $queryFilterHandler
+     * @var ApiColumnFilterHandler $queryFilterHandler
      */
     protected $queryFilterHandler;
 
@@ -49,14 +49,14 @@ abstract class ApiController extends Controller
      * @param ApiRequest $request
      * @param ReferencedModelRepository $repository
      * @param Transformer $transformer
-     * @param ApiQueryFilterHandler $filterHandlerService
+     * @param ApiColumnFilterHandler $filterHandlerService
      * @param ApiRelationFilterHandler $relationHandlerService
      */
     function __construct(
         ApiRequest $request,
         ReferencedModelRepository $repository,
         Transformer $transformer,
-        ApiQueryFilterHandler $filterHandlerService,
+        ApiColumnFilterHandler $filterHandlerService,
         ApiRelationFilterHandler $relationHandlerService
     ) {
         $this->request = $request;

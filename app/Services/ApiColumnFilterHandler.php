@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\ApiQueryFilter;
+use App\ApiColumnFilter;
 use App\Http\Requests\ApiRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Validator;
 
-class ApiQueryFilterHandler
+class ApiColumnFilterHandler
 {
-    const REQUEST_FIELD_FILTERS = 'filters';
+    const REQUEST_FIELD_FILTERS = 'columns';
 
     /** @var array $filterableFields */
     protected $filterableFields;
@@ -103,9 +103,9 @@ class ApiQueryFilterHandler
             // check that the structure of the filter is valid
             /** @var Validator $validator */
             $validator = ValidatorFacade::make($filter, [
-                ApiQueryFilter::FILTER_COLUMN => 'required|alpha_dash|max:255'.$filterableValuesRule,
-                ApiQueryFilter::FILTER_OPERATOR => 'required|in:<,<=,=,>=,>,like',
-                ApiQueryFilter::FILTER_VALUE => 'required',
+                ApiColumnFilter::FILTER_COLUMN => 'required|alpha_dash|max:255'.$filterableValuesRule,
+                ApiColumnFilter::FILTER_OPERATOR => 'required|in:<,<=,=,>=,>,like',
+                ApiColumnFilter::FILTER_VALUE => 'required',
             ]);
 
             $validator->validate();
@@ -122,7 +122,7 @@ class ApiQueryFilterHandler
 
         foreach($filters as $filter) {
             $collection->push(
-                new ApiQueryFilter($filter)
+                new ApiColumnFilter($filter)
             );
         }
 

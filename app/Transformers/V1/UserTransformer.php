@@ -21,7 +21,7 @@ class UserTransformer extends Transformer
     public function getTransformationMap($item) : array
     {
         return [
-            self::ID    => $item->getAttribute(User::FIELD_REFERENCE),
+            self::ID    => $item->getAttribute(User::REFERENCE),
             self::NAME  => $item->getAttribute(User::NAME),
             self::EMAIL  => $item->getAttribute(User::EMAIL),
             self::ACTIVE  => $item->getAttribute(User::ACTIVE),
