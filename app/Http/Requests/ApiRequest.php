@@ -13,8 +13,6 @@ class ApiRequest extends FormRequest
     const PAGINATED_RESULTS_LIMIT_UNLIMITED = 0;
 
     const QUERY_PARAM_FIELDS = 'fields';
-    const QUERY_PARAM_FIELDS_VALUE_ALL = 'all';
-    const QUERY_PARAM_FIELDS_VALUE_BASIC = 'basic';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -53,23 +51,6 @@ class ApiRequest extends FormRequest
     }
 
     /**
-     * check if all fields of the resource requested
-     *
-     * @return bool
-     */
-    public function allFieldsRequested(): bool
-    {
-        return
-            (
-                $this->query(self::QUERY_PARAM_FIELDS, self::QUERY_PARAM_FIELDS_VALUE_BASIC)
-                ===
-                self::QUERY_PARAM_FIELDS_VALUE_ALL
-            ) ?
-            true :
-            false;
-    }
-
-    /**
      * Checks if an unlimited result is requested
      *
      * @return bool
@@ -86,8 +67,7 @@ class ApiRequest extends FormRequest
     {
 
         if (
-            $this->query('fields')
-            && is_array($this->query('fields'))
+            $this->query(self::QUERY_PARAM_FIELDS)
         ) {
             return true;
         }
@@ -98,11 +78,11 @@ class ApiRequest extends FormRequest
     /**
      * Get the requested data fields
      *
-     * @return array|null
+     * @return array|string|null
      */
     public function getFields()
     {
 
-        return $this->hasFields() ? $this->query('fields') : null;
+        return $this->hasFields() ? $this->query(self::QUERY_PARAM_FIELDS) : null;
     }
 }

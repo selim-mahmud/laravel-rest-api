@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
 use App\Repositories\ReferencedModelRepository;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Traits\BasicApiResponses;
 use App\Transformers\Transformer;
@@ -39,6 +40,11 @@ abstract class ApiController extends Controller
     protected $queryFilterHandler;
 
     /**
+     * @var ApiRelationAdditionHandler $relationAdditionService
+     */
+    protected $relationAdditionService;
+
+    /**
      * @var ApiRelationFilterHandler $relationHandlerService
      */
     protected $relationHandlerService;
@@ -50,6 +56,7 @@ abstract class ApiController extends Controller
      * @param ReferencedModelRepository $repository
      * @param Transformer $transformer
      * @param ApiColumnFilterHandler $filterHandlerService
+     * @param ApiRelationAdditionHandler $relationAdditionService
      * @param ApiRelationFilterHandler $relationHandlerService
      */
     function __construct(
@@ -57,20 +64,28 @@ abstract class ApiController extends Controller
         ReferencedModelRepository $repository,
         Transformer $transformer,
         ApiColumnFilterHandler $filterHandlerService,
+        ApiRelationAdditionHandler $relationAdditionService,
         ApiRelationFilterHandler $relationHandlerService
     ) {
         $this->request = $request;
         $this->repository = $repository;
         $this->transformer = $transformer;
         $this->queryFilterHandler = $filterHandlerService;
+        $this->relationAdditionService = $relationAdditionService;
         $this->relationHandlerService = $relationHandlerService;
 
         $fields = $this->request->getFields();
 
         if($fields) {
-            $this->transformer->setCustomTransformation(
-                $fields
-            );
+            if(is_array($fields)){
+                $this->transformer->setCustomTransformation(
+                    $fields
+                );
+            }elseif ($fields === 'all'){
+
+                $this->transformer->setFullTransformation();
+            }
+
         }
     }
 

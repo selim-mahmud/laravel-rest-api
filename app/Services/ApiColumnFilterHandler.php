@@ -12,7 +12,7 @@ use Illuminate\Validation\Validator;
 
 class ApiColumnFilterHandler
 {
-    const REQUEST_FIELD_FILTERS = 'columns';
+    const QUERY_PARAM_FILTERS = 'columns';
 
     /** @var array $filterableFields */
     protected $filterableFields;
@@ -135,6 +135,6 @@ class ApiColumnFilterHandler
      * @return array
      */
     public function getRawArrayFilters() {
-        return $this->request->query(static::REQUEST_FIELD_FILTERS);
+        return $this->request->query(static::QUERY_PARAM_FILTERS);
     }
 }

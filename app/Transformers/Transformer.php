@@ -23,7 +23,8 @@ abstract class Transformer
      *
      * @return bool
      */
-    protected function canSetTransformation() : bool {
+    protected function canSetTransformation(): bool
+    {
         return !$this->transformationType ? true : false;
     }
 
@@ -32,9 +33,10 @@ abstract class Transformer
      *
      * @return Transformer
      */
-    public function setFullTransformation() : self {
+    public function setFullTransformation(): self
+    {
 
-        if($this->canSetTransformation()) {
+        if ($this->canSetTransformation()) {
             $this->transformationType = self::TRANSFORMATION_TYPE_FULL;
         }
 
@@ -47,7 +49,8 @@ abstract class Transformer
      * @param array $fields
      * @return Transformer
      */
-    protected function setCustomTransformationFields(array $fields) : self {
+    protected function setCustomTransformationFields(array $fields): self
+    {
         $this->customTransformationFields = $fields;
 
         return $this;
@@ -59,9 +62,10 @@ abstract class Transformer
      * @param array $fields
      * @return Transformer
      */
-    public function setCustomTransformation(array $fields) : self {
+    public function setCustomTransformation(array $fields): self
+    {
 
-        if($this->canSetTransformation()) {
+        if ($this->canSetTransformation()) {
             $this->transformationType = self::TRANSFORMATION_TYPE_CUSTOM;
 
             return $this->setCustomTransformationFields($fields);
@@ -75,7 +79,8 @@ abstract class Transformer
      *
      * @return mixed
      */
-    protected function getTransformationType() {
+    protected function getTransformationType()
+    {
         return $this->transformationType;
     }
 
@@ -105,7 +110,8 @@ abstract class Transformer
      * @param LengthAwarePaginator $paginatedCollection
      * @return LengthAwarePaginator
      */
-    public function transformPaginatedCollection(LengthAwarePaginator $paginatedCollection) : LengthAwarePaginator {
+    public function transformPaginatedCollection(LengthAwarePaginator $paginatedCollection): LengthAwarePaginator
+    {
 
         $paginatedCollection->setCollection(
             $this->transformCollection($paginatedCollection->getCollection())
@@ -120,7 +126,7 @@ abstract class Transformer
      * @param $item
      * @return array
      */
-    abstract public function getTransformationMap($item) : array;
+    abstract public function getTransformationMap($item): array;
 
     /**
      * Get the fields to be returned from the transformation
@@ -128,7 +134,8 @@ abstract class Transformer
      * @return array
      * @throws \Exception
      */
-    protected function getTransformationFields() : array {
+    protected function getTransformationFields(): array
+    {
         switch ($this->getTransformationType()) {
             case self::TRANSFORMATION_TYPE_FULL:
                 return $this->getFullTransformationFields();
@@ -148,14 +155,14 @@ abstract class Transformer
      *
      * @return array
      */
-    abstract protected function getBasicTransformationFields() : array;
+    abstract protected function getBasicTransformationFields(): array;
 
     /**
      * Get the full set of fields to be transformed
      *
      * @return array
      */
-    abstract protected function getFullTransformationFields() : array;
+    abstract protected function getFullTransformationFields(): array;
 
     /**
      * Transform a model
@@ -163,7 +170,8 @@ abstract class Transformer
      * @param $item
      * @return mixed
      */
-    public function transformModel($item) : array {
+    public function transformModel($item): array
+    {
         return array_intersect_key(
             $this->getTransformationMap($item),
             array_flip($this->getTransformationFields())

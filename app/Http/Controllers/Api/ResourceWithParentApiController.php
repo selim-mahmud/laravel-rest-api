@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\ApiRequest;
 use App\Repositories\ReferencedModelRepository;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Transformers\Transformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,9 +33,10 @@ abstract class ResourceWithParentApiController extends ResourceApiController
         Transformer $transformer,
         ReferencedModelRepository $parentRepository,
         ApiColumnFilterHandler $apiColumnFilterHandler,
+        ApiRelationAdditionHandler $relationAdditionService,
         ApiRelationFilterHandler $apiRelationFilterHandler
     ) {
-        parent::__construct($request, $repository, $transformer, $apiColumnFilterHandler, $apiRelationFilterHandler);
+        parent::__construct($request, $repository, $transformer, $apiColumnFilterHandler, $relationAdditionService, $apiRelationFilterHandler);
         $this->parentRepository = $parentRepository;
     }
 

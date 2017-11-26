@@ -8,6 +8,7 @@ use App\Question;
 use App\Repositories\UserRepository;
 use App\Repositories\QuestionRepository;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Transformers\V1\QuestionTransformer;
 
@@ -21,6 +22,7 @@ class QuestionController extends ResourceWithParentApiController
      * @param QuestionTransformer $questionTransformer
      * @param UserRepository $userRepository
      * @param ApiColumnFilterHandler $apiColumnFilterHandler
+     * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $apiRelationFilterHandler
      */
     public function __construct(
@@ -29,6 +31,7 @@ class QuestionController extends ResourceWithParentApiController
         QuestionTransformer $questionTransformer,
         UserRepository $userRepository,
         ApiColumnFilterHandler $apiColumnFilterHandler,
+        ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $apiRelationFilterHandler
     ) {
         parent::__construct(
@@ -38,6 +41,9 @@ class QuestionController extends ResourceWithParentApiController
             $userRepository,
             $apiColumnFilterHandler->setFilterableFields(
                 $this->getFilterableFields()
+            ),
+            $relationAdditionHandler->setAddableRelations(
+                $this->getRelationNames()
             ),
             $apiRelationFilterHandler->setRelationNames(
                 $this->getRelationNames()

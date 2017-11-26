@@ -59,12 +59,7 @@ abstract class ResourceApiController extends ApiController
             }
         }
 
-        if($this->request->allFieldsRequested()){
-
-            $this->transformer->setFullTransformation();
-        }
-
-        // unlimited results
+        // get unlimited results
         if($this->request->unlimitedPaginatedResultsRequested()) {
 
             $collection = $builder->get();

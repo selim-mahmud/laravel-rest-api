@@ -12,7 +12,7 @@ use Illuminate\Validation\Validator;
 
 class ApiRelationFilterHandler
 {
-    const FIELD_RELATIONS = 'relations';
+    const QUERY_PARAM_RELATIONS = 'relations';
 
     /** @var array $relationNames */
     protected $relationNames;
@@ -140,6 +140,6 @@ class ApiRelationFilterHandler
      */
     public function getRawArrayRelations()
     {
-        return $this->request->query(static::FIELD_RELATIONS);
+        return $this->request->query(static::QUERY_PARAM_RELATIONS);
     }
 }
