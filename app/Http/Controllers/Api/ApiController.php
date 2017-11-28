@@ -2,37 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\ApiColumnFilter;
+use App\ApiQueryRelation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
-use App\Repositories\ReferencedModelRepository;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
-use App\Traits\BasicApiResponses;
-use App\Transformers\Transformer;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
 {
-    use BasicApiResponses;
-
-    /**
-     * @var Transformer $transformer
-     */
-    protected $transformer;
 
     /**
      * @var ApiRequest $request
      */
     protected $request;
-
-    /**
-     * @var ReferencedModelRepository $repository
-     */
-    protected $repository;
 
     /**
      * @var ApiColumnFilterHandler $queryFilterHandler
@@ -53,100 +40,75 @@ abstract class ApiController extends Controller
      * ApiController constructor.
      *
      * @param ApiRequest $request
-     * @param ReferencedModelRepository $repository
-     * @param Transformer $transformer
      * @param ApiColumnFilterHandler $filterHandlerService
      * @param ApiRelationAdditionHandler $relationAdditionService
      * @param ApiRelationFilterHandler $relationHandlerService
      */
     function __construct(
         ApiRequest $request,
-        ReferencedModelRepository $repository,
-        Transformer $transformer,
         ApiColumnFilterHandler $filterHandlerService,
         ApiRelationAdditionHandler $relationAdditionService,
         ApiRelationFilterHandler $relationHandlerService
-    ) {
+    )
+    {
         $this->request = $request;
-        $this->repository = $repository;
-        $this->transformer = $transformer;
         $this->queryFilterHandler = $filterHandlerService;
         $this->relationAdditionService = $relationAdditionService;
         $this->relationHandlerService = $relationHandlerService;
+    }
 
-        $fields = $this->request->getFields();
-
-        if($fields) {
-            if(is_array($fields)){
-                $this->transformer->setCustomTransformation(
-                    $fields
+    /**
+     * Generate a list using the pre-populated query builder provided.
+     *
+     * @param Builder $builder
+     * @return Collection|LengthAwarePaginator
+     */
+    protected function getListCollection(Builder $builder)
+    {
+        // Add any filters to query builder
+        $filters = $this->queryFilterHandler->getCollectionOfFilters();
+        if ($filters) {
+            /** @var ApiColumnFilter $filter */
+            foreach ($filters as $filter) {
+                $builder->where(
+                    $filter->column,
+                    $filter->operator,
+                    $filter->value
                 );
-            }elseif ($fields === 'all'){
-
-                $this->transformer->setFullTransformation();
             }
-
-        }
-    }
-
-    /**
-     * Respond with pagination
-     *
-     * @param LengthAwarePaginator $paginatedCollection
-     * @return JsonResponse
-     */
-    protected function respondWithPagination(LengthAwarePaginator $paginatedCollection) : JsonResponse {
-
-        // append the limit to the urls
-        $paginatedCollection->appends('limit', $paginatedCollection->perPage());
-
-        $fields = $this->request->getFields();
-
-        // append the custom fields to the urls
-        if($fields) {
-            $paginatedCollection->appends(
-                http_build_query([
-                    'fields' => $fields
-                ])
-            );
         }
 
-        // append filters to the urls
-        if($this->queryFilterHandler->getCollectionOfFilters()) {
-            $paginatedCollection->appends(
-                'filters',
-                $this->queryFilterHandler->getRawArrayFilters()
-            );
+        // Add any filter based on relations to query builder
+        $relations = $this->relationHandlerService->getCollectionOfRelations();
+
+        if ($relations) {
+
+            /** @var ApiQueryRelation $relation */
+            foreach ($relations as $relation) {
+                $builder->has(
+                    $relation->relationName,
+                    $relation->relationOperator,
+                    $relation->relationValue
+                );
+            }
         }
 
-        return $this->respond(
-            $this->transformer->transformPaginatedCollection($paginatedCollection)
-        );
-    }
+        // Load related resource
+        $load_relations = $this->relationAdditionService->getArrayOfRelations();
 
-    /**
-     * Respond with a collection
-     *
-     * @param Collection $collection
-     * @return JsonResponse
-     */
-    protected function respondWithCollection(Collection $collection) : JsonResponse {
+        if ($load_relations) {
 
-        /** @var Collection $transformedCollection */
-        $transformedCollection = $this->transformer->transformCollection($collection);
+            $builder->with($load_relations);
+        }
 
-        return $this->respondWithData($transformedCollection->toArray());
-    }
+        // get unlimited results
+        if ($this->request->unlimitedPaginatedResultsRequested()) {
 
-    /**
-     * Respond with a model
-     *
-     * @param Model $model
-     * @return JsonResponse
-     */
-    protected function respondWithModel(Model $model) : JsonResponse {
-        return $this->respondWithData(
-            $this->transformer->transformModel($model)
-        );
+            return $builder->get();
+
+
+        }
+
+        return $builder->paginate($this->request->getPaginationLimit());
     }
 }

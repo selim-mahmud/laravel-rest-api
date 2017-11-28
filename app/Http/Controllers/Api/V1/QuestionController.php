@@ -2,53 +2,64 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Api\ResourceWithParentApiController;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
+use App\Http\Resources\V1\QuestionCollection;
 use App\Question;
-use App\Repositories\UserRepository;
-use App\Repositories\QuestionRepository;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
-use App\Transformers\V1\QuestionTransformer;
 
-class QuestionController extends ResourceWithParentApiController
+class QuestionController extends ApiController
 {
+    /**
+     * @var Question $question
+     */
+    protected $question;
+
     /**
      * UserController constructor.
      *
      * @param ApiRequest $request
-     * @param QuestionRepository $questionRepository
-     * @param QuestionTransformer $questionTransformer
-     * @param UserRepository $userRepository
-     * @param ApiColumnFilterHandler $apiColumnFilterHandler
+     * @param Question $question
+     * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
-     * @param ApiRelationFilterHandler $apiRelationFilterHandler
+     * @param ApiRelationFilterHandler $relationFilterHandler
      */
     public function __construct(
         ApiRequest $request,
-        QuestionRepository $questionRepository,
-        QuestionTransformer $questionTransformer,
-        UserRepository $userRepository,
-        ApiColumnFilterHandler $apiColumnFilterHandler,
+        Question $question,
+        ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
-        ApiRelationFilterHandler $apiRelationFilterHandler
-    ) {
+        ApiRelationFilterHandler $relationFilterHandler
+    )
+    {
         parent::__construct(
             $request,
-            $questionRepository,
-            $questionTransformer,
-            $userRepository,
-            $apiColumnFilterHandler->setFilterableFields(
+            $columnFilterHandler->setFilterableFields(
                 $this->getFilterableFields()
             ),
             $relationAdditionHandler->setAddableRelations(
                 $this->getRelationNames()
             ),
-            $apiRelationFilterHandler->setRelationNames(
+            $relationFilterHandler->setRelationNames(
                 $this->getRelationNames()
             )
         );
+
+        $this->question = $question;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return QuestionCollection
+     */
+    public function index(): QuestionCollection
+    {
+        $queryBuilder = $this->question->withRelations();
+
+        return new QuestionCollection($this->getListCollection($queryBuilder));
     }
 
     /**

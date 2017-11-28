@@ -44,7 +44,7 @@ class ApiRelationAdditionHandler
      * @return array|null
      * @throws ValidationException
      */
-    public function getCollectionOfRelations() {
+    public function getArrayOfRelations() {
         if(!$this->hasRelations()) {
             return null;
         }
@@ -72,6 +72,8 @@ class ApiRelationAdditionHandler
 
         $relations = $this->getRelations();
 
+        //dd($relations);
+
         // validate query value
         /** @var Validator $jsonValidator */
         $jsonValidator = ValidatorFacade::make([
@@ -91,9 +93,9 @@ class ApiRelationAdditionHandler
 
             // check that the name of the relation is valid
             /** @var Validator $validator */
-            $validator = ValidatorFacade::make($relation, [
-                'relation' => 'required|alpha_dash|max:255'.$addableValuesRule,
-            ]);
+            $validator = ValidatorFacade::make(
+                ['relation' => $relation],
+                ['relation' => 'required|alpha_dash|max:255'.$addableValuesRule,]);
 
             $validator->validate();
         }

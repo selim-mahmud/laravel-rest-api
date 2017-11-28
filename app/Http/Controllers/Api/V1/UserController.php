@@ -2,39 +2,40 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Api\ResourceApiController;
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
-use App\Repositories\UserRepository;
+use App\Http\Resources\V1\UserCollection;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
-use App\Transformers\V1\UserTransformer;
 use App\User;
 
-class UserController extends ResourceApiController
+class UserController extends ApiController
 {
+    /**
+     * @var User $user
+     */
+    protected $user;
+
     /**
      * UserController constructor.
      *
      * @param ApiRequest $request
-     * @param UserRepository $userRepository
-     * @param UserTransformer $userTransformer
+     * @param User $user
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
      */
     public function __construct(
         ApiRequest $request,
-        UserRepository $userRepository,
-        UserTransformer $userTransformer,
+        User $user,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler
-    ) {
+    )
+    {
         parent::__construct(
             $request,
-            $userRepository,
-            $userTransformer,
             $columnFilterHandler->setFilterableFields(
                 $this->getFilterableFields()
             ),
@@ -45,12 +46,27 @@ class UserController extends ResourceApiController
                 $this->getRelationNames()
             )
         );
+
+        $this->user = $user;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return UserCollection
+     */
+    public function index(): UserCollection
+    {
+        $queryBuilder = $this->user->withRelations();
+
+        return new UserCollection($this->getListCollection($queryBuilder));
     }
 
     /**
      * @return array
      */
-    protected function getFilterableFields() {
+    protected function getFilterableFields()
+    {
         return [
             User::ID,
             User::REFERENCE,
@@ -64,7 +80,8 @@ class UserController extends ResourceApiController
     /**
      * @return array
      */
-    protected function getRelationNames() {
+    protected function getRelationNames()
+    {
 
         return [
             User::RELATION_QUESTIONS,
