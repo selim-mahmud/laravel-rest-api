@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources\V1;
 
-use Illuminate\Http\Resources\Json\Resource;
+use App\Http\Requests\ApiRequest;
 use App\User as modelUser;
+use Illuminate\Http\Resources\Json\Resource;
 
 class User extends Resource
 {
@@ -26,9 +27,12 @@ class User extends Resource
             self::ID    => $this->{modelUser::REFERENCE},
             self::NAME  => $this->{modelUser::NAME},
             self::EMAIL  => $this->{modelUser::EMAIL},
-            self::ACTIVE  => $this->{modelUser::ACTIVE},
-            self::ACTIVATION_TOKEN  => $this->{modelUser::ACTIVATION_TOKEN},
-            self::REMEMBER_TOKEN  => $this->{modelUser::REMEMBER_TOKEN},
+            $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
+                self::ACTIVE  => $this->{modelUser::ACTIVE},
+                self::ACTIVATION_TOKEN  => $this->{modelUser::ACTIVATION_TOKEN},
+                self::REMEMBER_TOKEN  => $this->{modelUser::REMEMBER_TOKEN},
+            ]),
+            'questions' => Question::collection($this->whenLoaded(modelUser::RELATION_QUESTIONS)),
         ];
     }
 }
