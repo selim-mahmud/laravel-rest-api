@@ -4,31 +4,31 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
-use App\Http\Resources\V1\UserCollection;
+use App\Http\Resources\V1\TagCollection;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
-use App\User;
+use App\Tag;
 
-class UserController extends ApiController
+class TagController extends ApiController
 {
     /**
-     * @var User $user
+     * @var Tag $tag
      */
-    protected $user;
+    protected $tag;
 
     /**
-     * UserController constructor.
+     * TagController constructor.
      *
      * @param ApiRequest $request
-     * @param User $user
+     * @param Tag $tag
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
      */
     public function __construct(
         ApiRequest $request,
-        User $user,
+        Tag $tag,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler
@@ -47,19 +47,19 @@ class UserController extends ApiController
             )
         );
 
-        $this->user = $user;
+        $this->tag = $tag;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return UserCollection
+     * @return TagCollection
      */
-    public function index(): UserCollection
+    public function index(): TagCollection
     {
-        $queryBuilder = $this->user->newQuery();
+        $queryBuilder = $this->tag->newQuery();
 
-        return new UserCollection($this->getListCollection($queryBuilder));
+        return new TagCollection($this->getListCollection($queryBuilder));
     }
 
     /**
@@ -68,12 +68,11 @@ class UserController extends ApiController
     protected function getFilterableFields()
     {
         return [
-            User::ID,
-            User::REFERENCE,
-            User::NAME,
-            User::EMAIL,
-            User::ACTIVATION_TOKEN,
-            User::REMEMBER_TOKEN,
+            Tag::ID,
+            Tag::REFERENCE,
+            Tag::NAME,
+            Tag::SLUG,
+            Tag::ACTIVE,
         ];
     }
 
@@ -84,8 +83,7 @@ class UserController extends ApiController
     {
 
         return [
-            User::RELATION_QUESTIONS,
-            User::RELATION_ANSWERS
+            Tag::RELATION_QUESTIONS,
         ];
     }
 }

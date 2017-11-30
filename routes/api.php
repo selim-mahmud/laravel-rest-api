@@ -21,6 +21,8 @@ Route::group([
 
     Route::resource('users', 'UserController');
     Route::resource('questions', 'QuestionController');
+    Route::resource('answers', 'AnswerController');
+    Route::resource('tags', 'TagController');
     //Route::get('/companies/{reference}/solar-panels', 'SolarPanelsController@getSiblings');
     //Route::resource('/solar-panels', 'SolarPanelsController');
     //Route::get('/companies/{reference}/batteries', 'BatteriesController@getSiblings');

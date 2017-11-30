@@ -2,33 +2,33 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Answer;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
-use App\Http\Resources\V1\UserCollection;
+use App\Http\Resources\V1\AnswerCollection;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
-use App\User;
 
-class UserController extends ApiController
+class AnswerController extends ApiController
 {
     /**
-     * @var User $user
+     * @var Answer $answer
      */
-    protected $user;
+    protected $answer;
 
     /**
-     * UserController constructor.
+     * AnswerController constructor.
      *
      * @param ApiRequest $request
-     * @param User $user
+     * @param Answer $answer
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
      */
     public function __construct(
         ApiRequest $request,
-        User $user,
+        Answer $answer,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler
@@ -47,45 +47,45 @@ class UserController extends ApiController
             )
         );
 
-        $this->user = $user;
+        $this->answer = $answer;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return UserCollection
+     * @return AnswerCollection
      */
-    public function index(): UserCollection
+    public function index(): AnswerCollection
     {
-        $queryBuilder = $this->user->newQuery();
+        $queryBuilder = $this->answer->newQuery();
 
-        return new UserCollection($this->getListCollection($queryBuilder));
+        return new AnswerCollection($this->getListCollection($queryBuilder));
     }
 
     /**
      * @return array
      */
-    protected function getFilterableFields()
-    {
+    protected function getFilterableFields() {
         return [
-            User::ID,
-            User::REFERENCE,
-            User::NAME,
-            User::EMAIL,
-            User::ACTIVATION_TOKEN,
-            User::REMEMBER_TOKEN,
+            Answer::ID,
+            Answer::REFERENCE,
+            Answer::USER_ID,
+            Answer::QUESTION_ID,
+            Answer::DESCRIPTION,
+            Answer::EXCEPTED,
+            Answer::UP_VOTE,
+            Answer::DOWN_VOTE,
         ];
     }
 
     /**
      * @return array
      */
-    protected function getRelationNames()
-    {
+    protected function getRelationNames() {
 
         return [
-            User::RELATION_QUESTIONS,
-            User::RELATION_ANSWERS
+            Answer::RELATION_USER,
+            Answer::RELATION_QUESTION
         ];
     }
 }

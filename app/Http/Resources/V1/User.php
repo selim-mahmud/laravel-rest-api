@@ -33,6 +33,7 @@ class User extends Resource
                 self::REMEMBER_TOKEN  => $this->{modelUser::REMEMBER_TOKEN},
             ]),
             'questions' => Question::collection($this->whenLoaded(modelUser::RELATION_QUESTIONS)),
+            'answers' => Answer::collection($this->whenLoaded(modelUser::RELATION_ANSWERS)),
         ];
     }
 }

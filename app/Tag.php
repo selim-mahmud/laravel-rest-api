@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -10,16 +9,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * @package App
  * @property int $id
+ * @property string $reference
  * @property string $name
  * @property string $slug
- * @property string $display_name
+ * @property string $active
  */
-class Tag extends Model
+class Tag extends ReferencedModel
 {
     const ID = 'id';
+    const REFERENCE = 'reference';
     const NAME = 'name';
     const SLUG = 'slug';
-    const DISPLAY_NAME = 'display_name';
+    const ACTIVE = 'active';
+
+    const  RELATION_QUESTIONS = 'questions';
 
     /**
      * The attributes that are not mass assignable.
@@ -33,6 +36,15 @@ class Tag extends Model
     ];
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        self::ACTIVE => 'boolean',
+    ];
+
+    /**
      * The questions that belong to the tag.
      *
      * @return BelongsToMany
@@ -41,5 +53,4 @@ class Tag extends Model
     {
         return $this->belongsToMany(Question::class);
     }
-
 }

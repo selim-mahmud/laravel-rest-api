@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -10,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @package App
  * @property int $id
+ * @property string $reference
  * @property int $question_id
  * @property int $user_id
  * @property string $description
@@ -17,15 +17,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $up_vote
  * @property int $down_vote
  */
-class Answer extends Model
+class Answer extends ReferencedModel
 {
     const ID = 'id';
+    const REFERENCE = 'reference';
     const QUESTION_ID = 'question_id';
     const USER_ID = 'user_id';
     const DESCRIPTION = 'description';
     const EXCEPTED = 'excepted';
     const UP_VOTE = 'up_vote';
     const DOWN_VOTE = 'down_vote';
+
+    const RELATION_USER = 'user';
+    const RELATION_QUESTION = 'question';
 
     /**
      * The attributes that are not mass assignable.

@@ -105,8 +105,6 @@ abstract class ApiController extends Controller
         if ($this->request->unlimitedPaginatedResultsRequested()) {
 
             return $builder->get();
-
-
         }
 
         return $builder->paginate($this->request->getPaginationLimit());

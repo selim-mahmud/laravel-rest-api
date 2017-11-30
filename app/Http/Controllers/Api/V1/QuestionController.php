@@ -18,7 +18,7 @@ class QuestionController extends ApiController
     protected $question;
 
     /**
-     * UserController constructor.
+     * QuestionController constructor.
      *
      * @param ApiRequest $request
      * @param Question $question
@@ -57,7 +57,7 @@ class QuestionController extends ApiController
      */
     public function index(): QuestionCollection
     {
-        $queryBuilder = $this->question->withRelations();
+        $queryBuilder = $this->question->newQuery();
 
         return new QuestionCollection($this->getListCollection($queryBuilder));
     }
