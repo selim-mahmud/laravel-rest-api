@@ -41,8 +41,8 @@ class Question extends Resource
                 self::DOWN_VOTE => $this->{modelQuestion::DOWN_VOTE},
             ]),
             'answers' => Answer::collection($this->whenLoaded(modelQuestion::RELATION_ANSWERS)),
-            'user' => Answer::collection($this->whenLoaded(modelQuestion::RELATION_USER)),
-            'tags' => Answer::collection($this->whenLoaded(modelQuestion::RELATION_TAGS)),
+            'user' => new User($this->whenLoaded(modelQuestion::RELATION_USER)),
+            'tags' => Tag::collection($this->whenLoaded(modelQuestion::RELATION_TAGS)),
         ];
     }
 }

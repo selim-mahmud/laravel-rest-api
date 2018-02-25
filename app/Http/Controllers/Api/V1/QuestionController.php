@@ -87,6 +87,7 @@ class QuestionController extends ApiController
 
         return [
             Question::RELATION_USER,
+            Question::RELATION_ANSWERS,
             Question::RELATION_TAGS
         ];
     }

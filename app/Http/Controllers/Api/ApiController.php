@@ -94,16 +94,16 @@ abstract class ApiController extends Controller
         }
 
         // Load related resource
-        $load_relations = $this->relationAdditionService->getArrayOfRelations();
+        $loadRelations = $this->relationAdditionService->getArrayOfRelations();
 
-        if ($load_relations) {
-
-            $builder->with($load_relations);
+        if ($loadRelations) {
+            foreach ($loadRelations as $loadRelation) {
+                $builder->with($loadRelation);
+            }
         }
 
         // get unlimited results
         if ($this->request->unlimitedPaginatedResultsRequested()) {
-
             return $builder->get();
         }
 

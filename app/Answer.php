@@ -59,6 +59,6 @@ class Answer extends ReferencedModel
      */
     public function question()
     {
-        return $this->belongsTo(Answer::class);
+        return $this->belongsTo(Question::class);
     }
 }

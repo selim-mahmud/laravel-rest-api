@@ -25,6 +25,7 @@ class Tag extends Resource
             self::NAME => $this->{modelTag::NAME},
             self::SLUG => $this->{modelTag::SLUG},
             self::ACTIVE => $this->{modelTag::ACTIVE},
+            'questions' => Question::collection($this->whenLoaded(modelTag::RELATION_QUESTIONS)),
         ];
     }
 }

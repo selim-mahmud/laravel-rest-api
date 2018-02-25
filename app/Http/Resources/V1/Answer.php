@@ -35,8 +35,8 @@ class Answer extends Resource
                 self::UP_VOTE => $this->{modelAnswer::UP_VOTE},
                 self::DOWN_VOTE => $this->{modelAnswer::DOWN_VOTE},
             ]),
-            'user' => Answer::collection($this->whenLoaded(modelAnswer::RELATION_USER)),
-            'question' => Answer::collection($this->whenLoaded(modelAnswer::RELATION_QUESTION)),
+            'user' => new User($this->whenLoaded(modelAnswer::RELATION_USER)),
+            'question' => new Question($this->whenLoaded(modelAnswer::RELATION_QUESTION)),
         ];
     }
 }
