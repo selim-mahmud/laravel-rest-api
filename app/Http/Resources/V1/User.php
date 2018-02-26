@@ -3,7 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use App\Http\Requests\ApiRequest;
-use App\User as modelUser;
+use App\User as ModelUser;
 use Illuminate\Http\Resources\Json\Resource;
 
 class User extends Resource
@@ -24,16 +24,16 @@ class User extends Resource
     public function toArray($request)
     {
         return [
-            self::ID    => $this->{modelUser::REFERENCE},
-            self::NAME  => $this->{modelUser::NAME},
-            self::EMAIL  => $this->{modelUser::EMAIL},
+            self::ID    => $this->{ModelUser::REFERENCE},
+            self::NAME  => $this->{ModelUser::NAME},
+            self::EMAIL  => $this->{ModelUser::EMAIL},
             $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
-                self::ACTIVE  => $this->{modelUser::ACTIVE},
-                self::ACTIVATION_TOKEN  => $this->{modelUser::ACTIVATION_TOKEN},
-                self::REMEMBER_TOKEN  => $this->{modelUser::REMEMBER_TOKEN},
+                self::ACTIVE  => $this->{ModelUser::ACTIVE},
+                self::ACTIVATION_TOKEN  => $this->{ModelUser::ACTIVATION_TOKEN},
+                self::REMEMBER_TOKEN  => $this->{ModelUser::REMEMBER_TOKEN},
             ]),
-            'questions' => Question::collection($this->whenLoaded(modelUser::RELATION_QUESTIONS)),
-            'answers' => Answer::collection($this->whenLoaded(modelUser::RELATION_ANSWERS)),
+            'questions' => Question::collection($this->whenLoaded(ModelUser::RELATION_QUESTIONS)),
+            'answers' => Answer::collection($this->whenLoaded(ModelUser::RELATION_ANSWERS)),
         ];
     }
 }

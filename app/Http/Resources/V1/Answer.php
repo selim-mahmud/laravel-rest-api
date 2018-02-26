@@ -4,7 +4,7 @@ namespace App\Http\Resources\V1;
 
 use App\Http\Requests\ApiRequest;
 use Illuminate\Http\Resources\Json\Resource;
-use App\Answer as modelAnswer;
+use App\Answer as ModelAnswer;
 
 class Answer extends Resource
 {
@@ -25,18 +25,18 @@ class Answer extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{modelAnswer::REFERENCE},
-            self::USER_ID => $this->{modelAnswer::USER_ID},
-            self::USER_ID => $this->{modelAnswer::USER_ID},
-            self::QUESTION_ID => $this->{modelAnswer::QUESTION_ID},
-            self::DESCRIPTION => $this->{modelAnswer::DESCRIPTION},
+            self::ID => $this->{ModelAnswer::REFERENCE},
+            self::USER_ID => $this->{ModelAnswer::USER_ID},
+            self::USER_ID => $this->{ModelAnswer::USER_ID},
+            self::QUESTION_ID => $this->{ModelAnswer::QUESTION_ID},
+            self::DESCRIPTION => $this->{ModelAnswer::DESCRIPTION},
             $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
-                self::EXCEPTED => $this->{modelAnswer::EXCEPTED},
-                self::UP_VOTE => $this->{modelAnswer::UP_VOTE},
-                self::DOWN_VOTE => $this->{modelAnswer::DOWN_VOTE},
+                self::EXCEPTED => $this->{ModelAnswer::EXCEPTED},
+                self::UP_VOTE => $this->{ModelAnswer::UP_VOTE},
+                self::DOWN_VOTE => $this->{ModelAnswer::DOWN_VOTE},
             ]),
-            'user' => new User($this->whenLoaded(modelAnswer::RELATION_USER)),
-            'question' => new Question($this->whenLoaded(modelAnswer::RELATION_QUESTION)),
+            'user' => new User($this->whenLoaded(ModelAnswer::RELATION_USER)),
+            'question' => new Question($this->whenLoaded(ModelAnswer::RELATION_QUESTION)),
         ];
     }
 }

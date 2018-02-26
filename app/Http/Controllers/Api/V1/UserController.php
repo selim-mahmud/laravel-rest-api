@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\UserCollection;
+use App\Http\Resources\V1\User as ResourceUser;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
@@ -58,8 +59,19 @@ class UserController extends ApiController
     public function index(): UserCollection
     {
         $queryBuilder = $this->user->newQuery();
+        return new UserCollection($this->getResourceCollection($queryBuilder));
+    }
 
-        return new UserCollection($this->getListCollection($queryBuilder));
+    /**
+     * Display the specified resource.
+     *
+     * @param string $reference
+     * @return ResourceUser
+     */
+    public function show($reference) : ResourceUser
+    {
+        $model = $this->user->findByReferenceOrFail($reference);
+        return new ResourceUser($this->getSingleResource($model));
     }
 
     /**

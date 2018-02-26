@@ -3,7 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Resources\Json\Resource;
-use App\Tag as modelTag;
+use App\Tag as ModelTag;
 
 class Tag extends Resource
 {
@@ -21,11 +21,11 @@ class Tag extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{modelTag::REFERENCE},
-            self::NAME => $this->{modelTag::NAME},
-            self::SLUG => $this->{modelTag::SLUG},
-            self::ACTIVE => $this->{modelTag::ACTIVE},
-            'questions' => Question::collection($this->whenLoaded(modelTag::RELATION_QUESTIONS)),
+            self::ID => $this->{ModelTag::REFERENCE},
+            self::NAME => $this->{ModelTag::NAME},
+            self::SLUG => $this->{ModelTag::SLUG},
+            self::ACTIVE => $this->{ModelTag::ACTIVE},
+            'questions' => Question::collection($this->whenLoaded(ModelTag::RELATION_QUESTIONS)),
         ];
     }
 }

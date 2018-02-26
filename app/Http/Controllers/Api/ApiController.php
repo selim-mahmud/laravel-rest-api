@@ -63,7 +63,7 @@ abstract class ApiController extends Controller
      * @param Builder $builder
      * @return Collection|LengthAwarePaginator
      */
-    protected function getListCollection(Builder $builder)
+    protected function getResourceCollection(Builder $builder)
     {
         // Add any filters to query builder
         $filters = $this->queryFilterHandler->getCollectionOfFilters();
@@ -108,5 +108,22 @@ abstract class ApiController extends Controller
         }
 
         return $builder->paginate($this->request->getPaginationLimit());
+    }
+
+    /**
+     *
+     * @param $model
+     * @return $model
+     */
+    protected function getSingleResource($model)
+    {
+        // Load related resource
+        $loadRelations = $this->relationAdditionService->getArrayOfRelations();
+
+        if ($loadRelations) {
+            $model->load($loadRelations);
+        }
+
+        return $model;
     }
 }

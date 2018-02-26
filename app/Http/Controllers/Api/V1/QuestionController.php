@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\QuestionCollection;
 use App\Question;
+use App\Http\Resources\V1\Question as ResourceQuestion;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
@@ -58,8 +59,19 @@ class QuestionController extends ApiController
     public function index(): QuestionCollection
     {
         $queryBuilder = $this->question->newQuery();
+        return new QuestionCollection($this->getResourceCollection($queryBuilder));
+    }
 
-        return new QuestionCollection($this->getListCollection($queryBuilder));
+    /**
+     * Display the specified resource.
+     *
+     * @param string $reference
+     * @return ResourceQuestion
+     */
+    public function show($reference) : ResourceQuestion
+    {
+        $model = $this->question->findByReferenceOrFail($reference);
+        return new ResourceQuestion($this->getSingleResource($model));
     }
 
     /**

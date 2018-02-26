@@ -6,6 +6,7 @@ use App\Answer;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\AnswerCollection;
+use App\Http\Resources\V1\Answer as ResourceAnswer;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
@@ -59,7 +60,19 @@ class AnswerController extends ApiController
     {
         $queryBuilder = $this->answer->newQuery();
 
-        return new AnswerCollection($this->getListCollection($queryBuilder));
+        return new AnswerCollection($this->getResourceCollection($queryBuilder));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param string $reference
+     * @return ResourceAnswer
+     */
+    public function show($reference) : ResourceAnswer
+    {
+        $model = $this->answer->findByReferenceOrFail($reference);
+        return new ResourceAnswer($this->getSingleResource($model));
     }
 
     /**

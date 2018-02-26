@@ -4,7 +4,7 @@ namespace App\Http\Resources\V1;
 
 use App\Http\Requests\ApiRequest;
 use Illuminate\Http\Resources\Json\Resource;
-use App\Question as modelQuestion;
+use App\Question as ModelQuestion;
 
 class Question extends Resource
 {
@@ -28,21 +28,21 @@ class Question extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{modelQuestion::REFERENCE},
-            self::USER_ID => $this->{modelQuestion::USER_ID},
-            self::TITLE => $this->{modelQuestion::TITLE},
-            self::SLUG => $this->{modelQuestion::SLUG},
-            self::DESCRIPTION => $this->{modelQuestion::DESCRIPTION},
+            self::ID => $this->{ModelQuestion::REFERENCE},
+            self::USER_ID => $this->{ModelQuestion::USER_ID},
+            self::TITLE => $this->{ModelQuestion::TITLE},
+            self::SLUG => $this->{ModelQuestion::SLUG},
+            self::DESCRIPTION => $this->{ModelQuestion::DESCRIPTION},
             $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
-                self::FEATURED => $this->{modelQuestion::FEATURED},
-                self::STICKY => $this->{modelQuestion::STICKY},
-                self::SOLVED => $this->{modelQuestion::SOLVED},
-                self::UP_VOTE => $this->{modelQuestion::UP_VOTE},
-                self::DOWN_VOTE => $this->{modelQuestion::DOWN_VOTE},
+                self::FEATURED => $this->{ModelQuestion::FEATURED},
+                self::STICKY => $this->{ModelQuestion::STICKY},
+                self::SOLVED => $this->{ModelQuestion::SOLVED},
+                self::UP_VOTE => $this->{ModelQuestion::UP_VOTE},
+                self::DOWN_VOTE => $this->{ModelQuestion::DOWN_VOTE},
             ]),
-            'answers' => Answer::collection($this->whenLoaded(modelQuestion::RELATION_ANSWERS)),
-            'user' => new User($this->whenLoaded(modelQuestion::RELATION_USER)),
-            'tags' => Tag::collection($this->whenLoaded(modelQuestion::RELATION_TAGS)),
+            'answers' => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
+            'user' => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),
+            'tags' => Tag::collection($this->whenLoaded(ModelQuestion::RELATION_TAGS)),
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\TagCollection;
+use App\Http\Resources\V1\Tag as ResourceTag;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
@@ -59,7 +60,19 @@ class TagController extends ApiController
     {
         $queryBuilder = $this->tag->newQuery();
 
-        return new TagCollection($this->getListCollection($queryBuilder));
+        return new TagCollection($this->getResourceCollection($queryBuilder));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param string $reference
+     * @return ResourceTag
+     */
+    public function show($reference) : ResourceTag
+    {
+        $model = $this->tag->findByReferenceOrFail($reference);
+        return new ResourceTag($this->getSingleResource($model));
     }
 
     /**
