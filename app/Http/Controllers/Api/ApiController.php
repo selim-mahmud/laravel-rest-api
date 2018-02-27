@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
 {
+    const QUERY_PARAM_SORTINGS = 'sortings';
 
     /**
      * @var ApiRequest $request
@@ -99,6 +100,15 @@ abstract class ApiController extends Controller
         if ($loadRelations) {
             foreach ($loadRelations as $loadRelation) {
                 $builder->with($loadRelation);
+            }
+        }
+
+        // Load related resource
+        $sortings = $this->request->query(self::QUERY_PARAM_SORTINGS);
+
+        if ($sortings) {
+            foreach ($sortings as $column => $direction) {
+                $builder->orderBy($column, $direction);
             }
         }
 
