@@ -8,6 +8,7 @@ use App\Http\Resources\V1\QuestionCollection;
 use App\Question;
 use App\Http\Resources\V1\Question as ResourceQuestion;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 
@@ -26,13 +27,15 @@ class QuestionController extends ApiController
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
+     * @param ApiColumnSortingHandler $columnSortingHandler
      */
     public function __construct(
         ApiRequest $request,
         Question $question,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
-        ApiRelationFilterHandler $relationFilterHandler
+        ApiRelationFilterHandler $relationFilterHandler,
+        ApiColumnSortingHandler $columnSortingHandler
     )
     {
         parent::__construct(
@@ -45,6 +48,9 @@ class QuestionController extends ApiController
             ),
             $relationFilterHandler->setRelationNames(
                 $this->getRelationNames()
+            ),
+            $columnSortingHandler->setSortableColumns(
+                $this->getSortableFields()
             )
         );
 
@@ -78,6 +84,24 @@ class QuestionController extends ApiController
      * @return array
      */
     protected function getFilterableFields() {
+        return [
+            Question::ID,
+            Question::REFERENCE,
+            Question::USER_ID,
+            Question::TITLE,
+            Question::SLUG,
+            Question::FEATURED,
+            Question::STICKY,
+            Question::SOLVED,
+            Question::UP_VOTE,
+            Question::DOWN_VOTE,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSortableFields() {
         return [
             Question::ID,
             Question::REFERENCE,

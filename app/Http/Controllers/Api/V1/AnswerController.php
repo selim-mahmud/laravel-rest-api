@@ -8,6 +8,7 @@ use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\AnswerCollection;
 use App\Http\Resources\V1\Answer as ResourceAnswer;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 
@@ -26,13 +27,15 @@ class AnswerController extends ApiController
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
+     * @param ApiColumnSortingHandler $columnSortingHandler
      */
     public function __construct(
         ApiRequest $request,
         Answer $answer,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
-        ApiRelationFilterHandler $relationFilterHandler
+        ApiRelationFilterHandler $relationFilterHandler,
+        ApiColumnSortingHandler $columnSortingHandler
     )
     {
         parent::__construct(
@@ -45,6 +48,9 @@ class AnswerController extends ApiController
             ),
             $relationFilterHandler->setRelationNames(
                 $this->getRelationNames()
+            ),
+            $columnSortingHandler->setSortableColumns(
+                $this->getSortableFields()
             )
         );
 
@@ -79,6 +85,22 @@ class AnswerController extends ApiController
      * @return array
      */
     protected function getFilterableFields() {
+        return [
+            Answer::ID,
+            Answer::REFERENCE,
+            Answer::USER_ID,
+            Answer::QUESTION_ID,
+            Answer::DESCRIPTION,
+            Answer::EXCEPTED,
+            Answer::UP_VOTE,
+            Answer::DOWN_VOTE,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSortableFields() {
         return [
             Answer::ID,
             Answer::REFERENCE,

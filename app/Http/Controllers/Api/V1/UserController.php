@@ -7,6 +7,7 @@ use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\UserCollection;
 use App\Http\Resources\V1\User as ResourceUser;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\User;
@@ -26,13 +27,15 @@ class UserController extends ApiController
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
+     * @param ApiColumnSortingHandler $columnSortingHandler
      */
     public function __construct(
         ApiRequest $request,
         User $user,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
-        ApiRelationFilterHandler $relationFilterHandler
+        ApiRelationFilterHandler $relationFilterHandler,
+        ApiColumnSortingHandler $columnSortingHandler
     )
     {
         parent::__construct(
@@ -45,6 +48,9 @@ class UserController extends ApiController
             ),
             $relationFilterHandler->setRelationNames(
                 $this->getRelationNames()
+            ),
+            $columnSortingHandler->setSortableColumns(
+                $this->getSortableFields()
             )
         );
 
@@ -79,6 +85,20 @@ class UserController extends ApiController
      */
     protected function getFilterableFields()
     {
+        return [
+            User::ID,
+            User::REFERENCE,
+            User::NAME,
+            User::EMAIL,
+            User::ACTIVATION_TOKEN,
+            User::REMEMBER_TOKEN,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSortableFields() {
         return [
             User::ID,
             User::REFERENCE,

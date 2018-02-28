@@ -7,6 +7,7 @@ use App\ApiQueryRelation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
 use App\Services\ApiColumnFilterHandler;
+use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,8 +16,6 @@ use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
 {
-    const QUERY_PARAM_SORTINGS = 'sortings';
-
     /**
      * @var ApiRequest $request
      */
@@ -38,24 +37,32 @@ abstract class ApiController extends Controller
     protected $relationHandlerService;
 
     /**
+     * @var ApiRelationFilterHandler $relationHandlerService
+     */
+    protected $columnSortingHandlerService;
+
+    /**
      * ApiController constructor.
      *
      * @param ApiRequest $request
      * @param ApiColumnFilterHandler $filterHandlerService
      * @param ApiRelationAdditionHandler $relationAdditionService
      * @param ApiRelationFilterHandler $relationHandlerService
+     * @param ApiColumnSortingHandler $columnSortingHandlerService
      */
     function __construct(
         ApiRequest $request,
         ApiColumnFilterHandler $filterHandlerService,
         ApiRelationAdditionHandler $relationAdditionService,
-        ApiRelationFilterHandler $relationHandlerService
+        ApiRelationFilterHandler $relationHandlerService,
+        ApiColumnSortingHandler $columnSortingHandlerService
     )
     {
         $this->request = $request;
         $this->queryFilterHandler = $filterHandlerService;
         $this->relationAdditionService = $relationAdditionService;
         $this->relationHandlerService = $relationHandlerService;
+        $this->columnSortingHandlerService = $columnSortingHandlerService;
     }
 
     /**
@@ -79,9 +86,24 @@ abstract class ApiController extends Controller
             }
         }
 
+        // Load related resource
+        $loadRelations = $this->relationAdditionService->getArrayOfRelations();
+        if ($loadRelations) {
+            foreach ($loadRelations as $loadRelation) {
+                $builder->with($loadRelation);
+            }
+        }
+
+        // sort resources
+        $sortingColumns = $this->columnSortingHandlerService->getArrayOfSortingColumns();
+        if ($sortingColumns) {
+            foreach ($sortingColumns as $column => $direction) {
+                $builder->orderBy($column, $direction);
+            }
+        }
+
         // Add any filter based on relations to query builder
         $relations = $this->relationHandlerService->getCollectionOfRelations();
-
         if ($relations) {
 
             /** @var ApiQueryRelation $relation */
@@ -91,24 +113,6 @@ abstract class ApiController extends Controller
                     $relation->relationOperator,
                     $relation->relationValue
                 );
-            }
-        }
-
-        // Load related resource
-        $loadRelations = $this->relationAdditionService->getArrayOfRelations();
-
-        if ($loadRelations) {
-            foreach ($loadRelations as $loadRelation) {
-                $builder->with($loadRelation);
-            }
-        }
-
-        // Load related resource
-        $sortings = $this->request->query(self::QUERY_PARAM_SORTINGS);
-
-        if ($sortings) {
-            foreach ($sortings as $column => $direction) {
-                $builder->orderBy($column, $direction);
             }
         }
 
@@ -131,7 +135,23 @@ abstract class ApiController extends Controller
         $loadRelations = $this->relationAdditionService->getArrayOfRelations();
 
         if ($loadRelations) {
-            $model->load($loadRelations);
+            // get unlimited results
+            if ($this->request->unlimitedPaginatedResultsRequested()) {
+                return $model->load($loadRelations);
+            }
+
+            foreach ($loadRelations as $loadRelation){
+                $model->load(
+                    [
+                        $loadRelation => function ($q) {
+                            $q->paginate($this->request->getPaginationLimit());
+                        }
+                    ]
+                );
+            }
+
+            return $model;
+
         }
 
         return $model;
