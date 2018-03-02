@@ -135,23 +135,30 @@ abstract class ApiController extends Controller
         $loadRelations = $this->relationAdditionService->getArrayOfRelations();
 
         if ($loadRelations) {
+
             // get unlimited results
             if ($this->request->unlimitedPaginatedResultsRequested()) {
-                return $model->load($loadRelations);
+                foreach ($loadRelations as $loadRelation){
+                    $model->load(
+                        [
+                            $loadRelation => function ($q) {
+                                $q->latest();
+                            }
+                        ]
+                    );
+                }
+            }else{
+
+                foreach ($loadRelations as $loadRelation){
+                    $model->load(
+                        [
+                            $loadRelation => function ($q) {
+                                $q->latest()->paginate($this->request->getPaginationLimit());
+                            }
+                        ]
+                    );
+                }
             }
-
-            foreach ($loadRelations as $loadRelation){
-                $model->load(
-                    [
-                        $loadRelation => function ($q) {
-                            $q->paginate($this->request->getPaginationLimit());
-                        }
-                    ]
-                );
-            }
-
-            return $model;
-
         }
 
         return $model;
