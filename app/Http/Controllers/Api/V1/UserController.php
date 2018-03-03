@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
+use App\Http\Resources\V1\AnswerCollection;
+use App\Http\Resources\V1\QuestionCollection;
 use App\Http\Resources\V1\UserCollection;
 use App\Http\Resources\V1\User as ResourceUser;
 use App\Services\ApiColumnFilterHandler;
@@ -78,6 +80,30 @@ class UserController extends ApiController
     {
         $model = $this->user->findByReferenceOrFail($reference);
         return new ResourceUser($this->getSingleResource($model));
+    }
+
+    /**
+     * @param $reference
+     * @return QuestionCollection
+     */
+    public function getQuestions(string $reference) : QuestionCollection
+    {
+        /** @var User $user */
+        $user = $this->user->findByReferenceOrFail($reference);
+        $user = $this->getRelatedResourceCollection($user, User::RELATION_QUESTIONS);
+        return new QuestionCollection($user->questions);
+    }
+
+    /**
+     * @param $reference
+     * @return AnswerCollection
+     */
+    public function getAnswers(string $reference) : AnswerCollection
+    {
+        /** @var User $user */
+        $user = $this->user->findByReferenceOrFail($reference);
+        $user = $this->getRelatedResourceCollection($user, User::RELATION_ANSWERS);
+        return new AnswerCollection($user->answers);
     }
 
     /**

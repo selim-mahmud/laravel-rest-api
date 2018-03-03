@@ -29,10 +29,8 @@ Route::group([
     Route::resource('tags', 'TagController');
     Route::get('tags/{reference}/questions', 'TagController@getQuestions');
     Route::resource('users', 'UserController');
-    //Route::get('/companies/{reference}/solar-panels', 'SolarPanelsController@getSiblings');
-    //Route::resource('/solar-panels', 'SolarPanelsController');
-    //Route::get('/companies/{reference}/batteries', 'BatteriesController@getSiblings');
-    //Route::resource('/batteries', 'BatteriesController');
+    Route::get('users/{reference}/questions', 'UserController@getQuestions');
+    Route::get('users/{reference}/answers', 'UserController@getAnswers');
 });
 
 
