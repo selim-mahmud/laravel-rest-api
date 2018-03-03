@@ -19,10 +19,13 @@ Route::group([
     'namespace' => 'V1',
 ], function () {
 
-    Route::resource('users', 'UserController');
     Route::resource('questions', 'QuestionController');
+    Route::get('questions/{reference}/answers', 'QuestionController@getAnswers');
+    Route::get('questions/{reference}/tags', 'QuestionController@getTags');
+    Route::get('questions/{reference}/user', 'QuestionController@getUser');
     Route::resource('answers', 'AnswerController');
     Route::resource('tags', 'TagController');
+    Route::resource('users', 'UserController');
     //Route::get('/companies/{reference}/solar-panels', 'SolarPanelsController@getSiblings');
     //Route::resource('/solar-panels', 'SolarPanelsController');
     //Route::get('/companies/{reference}/batteries', 'BatteriesController@getSiblings');

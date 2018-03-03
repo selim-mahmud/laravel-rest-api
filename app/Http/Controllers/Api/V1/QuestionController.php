@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
+use App\Http\Resources\V1\AnswerCollection;
 use App\Http\Resources\V1\QuestionCollection;
+use App\Http\Resources\V1\TagCollection;
 use App\Question;
 use App\Http\Resources\V1\Question as ResourceQuestion;
+use App\Http\Resources\V1\User as ResourceUser;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
@@ -74,16 +77,52 @@ class QuestionController extends ApiController
      * @param string $reference
      * @return ResourceQuestion
      */
-    public function show($reference) : ResourceQuestion
+    public function show(string $reference): ResourceQuestion
     {
-        $model = $this->question->findByReferenceOrFail($reference);
-        return new ResourceQuestion($this->getSingleResource($model));
+        $question = $this->question->findByReferenceOrFail($reference);
+        return new ResourceQuestion($this->getSingleResource($question));
+    }
+
+    /**
+     * @param $reference
+     * @return AnswerCollection
+     */
+    public function getAnswers(string $reference) : AnswerCollection
+    {
+        /** @var Question $question */
+        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->getRelatedResourceCollection($question, Question::RELATION_ANSWERS);
+        return new AnswerCollection($question->answers);
+    }
+
+    /**
+     * @param $reference
+     * @return TagCollection
+     */
+    public function getTags(string $reference) : TagCollection
+    {
+        /** @var Question $question */
+        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->getRelatedResourceCollection($question, Question::RELATION_TAGS);
+        return new TagCollection($question->tags);
+    }
+
+    /**
+     * @param $reference
+     * @return ResourceUser
+     */
+    public function getUser(string $reference) : ResourceUser
+    {
+        /** @var Question $question */
+        $question = $this->question->findByReferenceOrFail($reference)->load(Question::RELATION_USER);
+        return new ResourceUser($question->user);
     }
 
     /**
      * @return array
      */
-    protected function getFilterableFields() {
+    protected function getFilterableFields()
+    {
         return [
             Question::ID,
             Question::REFERENCE,
@@ -101,7 +140,8 @@ class QuestionController extends ApiController
     /**
      * @return array
      */
-    protected function getSortableFields() {
+    protected function getSortableFields()
+    {
         return [
             Question::ID,
             Question::REFERENCE,
@@ -119,7 +159,8 @@ class QuestionController extends ApiController
     /**
      * @return array
      */
-    protected function getRelationNames() {
+    protected function getRelationNames()
+    {
 
         return [
             Question::RELATION_USER,

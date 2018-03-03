@@ -6,12 +6,15 @@ use App\ApiColumnFilter;
 use App\ApiQueryRelation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
+use App\ReferencedModel;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
@@ -125,11 +128,10 @@ abstract class ApiController extends Controller
     }
 
     /**
-     *
-     * @param $model
-     * @return $model
+     * @param ReferencedModel $model
+     * @return ReferencedModel $model
      */
-    protected function getSingleResource($model)
+    protected function getSingleResource(ReferencedModel $model) : ReferencedModel
     {
         // Load related resource
         $loadRelations = $this->relationAdditionService->getArrayOfRelations();
@@ -138,7 +140,7 @@ abstract class ApiController extends Controller
 
             // get unlimited results
             if ($this->request->unlimitedPaginatedResultsRequested()) {
-                foreach ($loadRelations as $loadRelation){
+                foreach ($loadRelations as $loadRelation) {
                     $model->load(
                         [
                             $loadRelation => function ($q) {
@@ -147,9 +149,9 @@ abstract class ApiController extends Controller
                         ]
                     );
                 }
-            }else{
+            } else {
 
-                foreach ($loadRelations as $loadRelation){
+                foreach ($loadRelations as $loadRelation) {
                     $model->load(
                         [
                             $loadRelation => function ($q) {
@@ -159,6 +161,36 @@ abstract class ApiController extends Controller
                     );
                 }
             }
+        }
+
+        return $model;
+    }
+
+    /**
+     * @param ReferencedModel $model
+     * @param string $relation
+     * @return ReferencedModel $model
+     */
+    protected function getRelatedResourceCollection(ReferencedModel $model, string $relation): ReferencedModel
+    {
+        // get unlimited results
+        if ($this->request->unlimitedPaginatedResultsRequested()) {
+            $model->load(
+                [
+                    $relation => function ($q) {
+                        $q->latest();
+                    }
+                ]
+            );
+        } else {
+
+            $model->load(
+                [
+                    $relation => function ($q) {
+                        $q->latest()->paginate($this->request->getPaginationLimit());
+                    }
+                ]
+            );
         }
 
         return $model;
