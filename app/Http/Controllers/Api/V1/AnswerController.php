@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
 use App\Http\Resources\V1\AnswerCollection;
 use App\Http\Resources\V1\Answer as ResourceAnswer;
+use App\Http\Resources\V1\Question as ResourceQuestion;
+use App\Http\Resources\V1\User as ResourceUser;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
@@ -79,6 +81,28 @@ class AnswerController extends ApiController
     {
         $model = $this->answer->findByReferenceOrFail($reference);
         return new ResourceAnswer($this->getSingleResource($model));
+    }
+
+    /**
+     * @param $reference
+     * @return ResourceQuestion
+     */
+    public function getQuestion(string $reference) : ResourceQuestion
+    {
+        /** @var Answer $answer */
+        $answer = $this->answer->findByReferenceOrFail($reference)->load(Answer::RELATION_QUESTION);
+        return new ResourceQuestion($answer->question);
+    }
+
+    /**
+     * @param $reference
+     * @return ResourceUser
+     */
+    public function getUser(string $reference) : ResourceUser
+    {
+        /** @var Answer $answer */
+        $answer = $this->answer->findByReferenceOrFail($reference)->load(Answer::RELATION_USER);
+        return new ResourceUser($answer->user);
     }
 
     /**
