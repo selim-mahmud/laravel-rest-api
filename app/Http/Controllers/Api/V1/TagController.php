@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
+use App\Http\Resources\V1\QuestionCollection;
 use App\Http\Resources\V1\TagCollection;
 use App\Http\Resources\V1\Tag as ResourceTag;
 use App\Services\ApiColumnFilterHandler;
@@ -79,6 +80,18 @@ class TagController extends ApiController
     {
         $model = $this->tag->findByReferenceOrFail($reference);
         return new ResourceTag($this->getSingleResource($model));
+    }
+
+    /**
+     * @param $reference
+     * @return QuestionCollection
+     */
+    public function getQuestions(string $reference) : QuestionCollection
+    {
+        /** @var Tag $tag */
+        $tag = $this->tag->findByReferenceOrFail($reference);
+        $tag = $this->getRelatedResourceCollection($tag, Tag::RELATION_QUESTIONS);
+        return new QuestionCollection($tag->questions);
     }
 
     /**
