@@ -26,7 +26,8 @@ abstract class ReferencedModel extends Model
     /**
      * @return string
      */
-    public function getReferenceName() : string {
+    public function getReferenceName(): string
+    {
         return self::FIELD_REFERENCE;
     }
 
@@ -35,7 +36,8 @@ abstract class ReferencedModel extends Model
      *
      * @param $value
      */
-    public function setReferenceAttribute(string $value) {
+    public function setReferenceAttribute(string $value)
+    {
         $this->attributes[self::FIELD_REFERENCE] = strtoupper($value);
     }
 
@@ -43,7 +45,8 @@ abstract class ReferencedModel extends Model
      * @param string $reference
      * @return mixed
      */
-    public function findByReference(string $reference) {
+    public function findByReference(string $reference)
+    {
         return $this->where($this->getReferenceName(), $reference)->first();
     }
 
@@ -54,10 +57,11 @@ abstract class ReferencedModel extends Model
      * @throws ModelNotFoundException
      * @return ReferencedModel
      */
-    public function findByReferenceOrFail(string $reference) : ReferencedModel {
+    public function findByReferenceOrFail(string $reference): ReferencedModel
+    {
         $model = $this->findByReference($reference);
 
-        if(!$model) {
+        if (!$model) {
             throw new ModelNotFoundException('Could not find requested data', Response::HTTP_NOT_FOUND);
         }
 
@@ -71,8 +75,23 @@ abstract class ReferencedModel extends Model
      * @throws ModelNotFoundException if company could not be found
      * @return string
      */
-    public function getReferenceByIdOrFail(int $id) : string {
+    public function getReferenceByIdOrFail(int $id): string
+    {
 
         return $this->findOrFail($id)->getAttribute($this->getReferenceName());
     }
+
+    /**
+     * @return string
+     */
+    public function generateUniqueReference()
+    {
+        $reference = str_random();
+        while ($this->findByReference($reference) !== null) {
+            $reference = str_random();
+        }
+
+        return $reference;
+    }
+
 }

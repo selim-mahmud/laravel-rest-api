@@ -21,11 +21,11 @@ class CreateQuestionsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->text('description');
-            $table->boolean('featured');
-            $table->boolean('sticky');
-            $table->boolean('solved');
-            $table->integer('up_vote');
-            $table->integer('down_vote');
+            $table->boolean('featured')->default(0);
+            $table->boolean('sticky')->default(0);
+            $table->boolean('solved')->default(0);
+            $table->integer('up_vote')->default(0);
+            $table->integer('down_vote')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')

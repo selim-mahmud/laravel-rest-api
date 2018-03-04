@@ -19,7 +19,7 @@ class CreateTagsTable extends Migration
             $table->string('reference');
             $table->string('name');
             $table->string('slug');
-            $table->boolean('active');
+            $table->boolean('active')->default(0);
             $table->timestamps();
         });
     }

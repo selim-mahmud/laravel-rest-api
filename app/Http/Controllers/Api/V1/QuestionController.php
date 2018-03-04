@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
+use App\Http\Requests\StoreQuestion;
 use App\Http\Resources\V1\AnswerCollection;
 use App\Http\Resources\V1\QuestionCollection;
 use App\Http\Resources\V1\TagCollection;
@@ -14,19 +15,22 @@ use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
+use App\Transformers\V1\QuestionTransformer;
 
 class QuestionController extends ApiController
 {
-    /**
-     * @var Question $question
-     */
+    /**@var Question $question */
     protected $question;
+
+    /**@var QuestionTransformer $questionTransformer */
+    protected $questionTransformer;
 
     /**
      * QuestionController constructor.
      *
      * @param ApiRequest $request
      * @param Question $question
+     * @param QuestionTransformer $questionTransformer
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
@@ -35,6 +39,7 @@ class QuestionController extends ApiController
     public function __construct(
         ApiRequest $request,
         Question $question,
+        QuestionTransformer $questionTransformer,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler,
@@ -58,6 +63,7 @@ class QuestionController extends ApiController
         );
 
         $this->question = $question;
+        $this->questionTransformer = $questionTransformer;
     }
 
     /**
@@ -116,6 +122,14 @@ class QuestionController extends ApiController
         /** @var Question $question */
         $question = $this->question->findByReferenceOrFail($reference)->load(Question::RELATION_USER);
         return new ResourceUser($question->user);
+    }
+
+    public function store(StoreQuestion $request)
+    {
+        $imputs = $this->questionTransformer->transformInputs($request->all());
+        $imputs[Question::SLUG] = str_slug($imputs[Question::TITLE]);
+        $imputs[Question::REFERENCE] = $this->question->generateUniqueReference();
+        return Question::create($imputs);
     }
 
     /**

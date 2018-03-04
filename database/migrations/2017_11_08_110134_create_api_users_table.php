@@ -20,7 +20,7 @@ class CreateApiUsersTable extends Migration
             $table->string('name');
             $table->string('user_name')->unique();
             $table->string('password');
-            $table->boolean('active');
+            $table->boolean('active')->default(0);
             $table->string('activation_token')->nullable();
             $table->timestamps();
         });

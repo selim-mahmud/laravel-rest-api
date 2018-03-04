@@ -20,9 +20,9 @@ class CreateAnswersTable extends Migration
             $table->bigInteger('question_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->text('description');
-            $table->boolean('excepted');
-            $table->integer('up_vote');
-            $table->integer('down_vote');
+            $table->boolean('excepted')->default(0);
+            $table->integer('up_vote')->default(0);
+            $table->integer('down_vote')->default(0);
             $table->timestamps();
 
             $table->foreign('question_id')

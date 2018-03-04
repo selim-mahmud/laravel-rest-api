@@ -19,6 +19,10 @@ class Question extends Resource
     const UP_VOTE = 'up_vote';
     const DOWN_VOTE = 'down_vote';
 
+    const RELATION_ANSWERS = 'answers';
+    const RELATION_USER = 'user';
+    const RELATION_TAGS = 'tags';
+
     /**
      * Transform the resource into an array.
      *
@@ -40,9 +44,10 @@ class Question extends Resource
                 self::UP_VOTE => $this->{ModelQuestion::UP_VOTE},
                 self::DOWN_VOTE => $this->{ModelQuestion::DOWN_VOTE},
             ]),
-            'answers' => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
-            'user' => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),
-            'tags' => Tag::collection($this->whenLoaded(ModelQuestion::RELATION_TAGS)),
+            self::RELATION_ANSWERS => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
+            self::RELATION_USER => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),
+            self::RELATION_TAGS => Tag::collection($this->whenLoaded(ModelQuestion::RELATION_TAGS)),
         ];
     }
+
 }

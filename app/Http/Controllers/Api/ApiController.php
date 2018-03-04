@@ -13,8 +13,6 @@ use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
