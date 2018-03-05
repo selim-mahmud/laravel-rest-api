@@ -15,9 +15,11 @@ use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
+use App\StatusMessage;
 use App\Transformers\V1\QuestionTransformer;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class QuestionController extends ApiController
 {
@@ -135,13 +137,24 @@ class QuestionController extends ApiController
         try{
 
             Question::create($imputs);
-            return $this->getSuccessResponse('Resource has been created successfully.', 201);
+            return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
 
         }catch(Exception $exception){
 
-            return $this->getFailResponse('Something bad has been happened. Please try again later.', 500);
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
+    }
+
+    public function update(StoreQuestion $request, $reference)
+    {
+        $question = $this->question->findByReferenceOrFail($reference);
+
+        if(!$question->update($this->questionTransformer->transformInputs($request->all()))){
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
     }
 
     /**

@@ -14,6 +14,7 @@ use App\Services\ApiRelationFilterHandler;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
@@ -202,7 +203,7 @@ abstract class ApiController extends Controller
      * @param int $statusCode
      * @return JsonResponse
      */
-    protected function getSuccessResponse(string $successMessage, int $statusCode = 200) : JsonResponse
+    protected function getSuccessResponse(string $successMessage, int $statusCode = Response::HTTP_OK) : JsonResponse
     {
         return JsonResponse::create([
             'data' => [
@@ -217,7 +218,7 @@ abstract class ApiController extends Controller
      * @param int $statusCode
      * @return JsonResponse
      */
-    protected function getFailResponse(string $failMessage, int $statusCode = 500) : JsonResponse
+    protected function getFailResponse(string $failMessage, int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR) : JsonResponse
     {
         return JsonResponse::create([
             'data' => [
