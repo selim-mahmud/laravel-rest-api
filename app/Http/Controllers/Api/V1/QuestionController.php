@@ -18,7 +18,9 @@ use App\Services\ApiRelationFilterHandler;
 use App\StatusMessage;
 use App\Transformers\V1\QuestionTransformer;
 use Exception;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class QuestionController extends ApiController
@@ -48,8 +50,7 @@ class QuestionController extends ApiController
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler,
         ApiColumnSortingHandler $columnSortingHandler
-    )
-    {
+    ) {
         parent::__construct(
             $request,
             $columnFilterHandler->setFilterableFields(
@@ -66,7 +67,7 @@ class QuestionController extends ApiController
             )
         );
 
-        $this->question = $question;
+        $this->question            = $question;
         $this->questionTransformer = $questionTransformer;
     }
 
@@ -97,7 +98,7 @@ class QuestionController extends ApiController
      * @param $reference
      * @return AnswerCollection
      */
-    public function getAnswers(string $reference) : AnswerCollection
+    public function getAnswers(string $reference): AnswerCollection
     {
         /** @var Question $question */
         $question = $this->question->findByReferenceOrFail($reference);
@@ -109,7 +110,7 @@ class QuestionController extends ApiController
      * @param $reference
      * @return TagCollection
      */
-    public function getTags(string $reference) : TagCollection
+    public function getTags(string $reference): TagCollection
     {
         /** @var Question $question */
         $question = $this->question->findByReferenceOrFail($reference);
@@ -121,40 +122,59 @@ class QuestionController extends ApiController
      * @param $reference
      * @return ResourceUser
      */
-    public function getUser(string $reference) : ResourceUser
+    public function getUser(string $reference): ResourceUser
     {
         /** @var Question $question */
         $question = $this->question->findByReferenceOrFail($reference)->load(Question::RELATION_USER);
         return new ResourceUser($question->user);
     }
 
-    public function store(StoreQuestion $request)
+    public function store(StoreQuestion $request): JsonResponse
     {
-        $imputs = $this->questionTransformer->transformInputs($request->all());
-        $imputs[Question::SLUG] = str_slug($imputs[Question::TITLE]);
+        $imputs                      = $this->questionTransformer->transformInputs($request->all());
+        $imputs[Question::SLUG]      = str_slug($imputs[Question::TITLE]);
         $imputs[Question::REFERENCE] = $this->question->generateUniqueReference();
 
-        try{
+        try {
 
             Question::create($imputs);
             return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
 
-        }catch(Exception $exception){
+        } catch (Exception $exception) {
 
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
     }
 
-    public function update(StoreQuestion $request, $reference)
+    public function update(Request $request, $reference): JsonResponse
     {
-        $question = $this->question->findByReferenceOrFail($reference);
+        $jsonValidator = ValidatorFacade::make(
+            $request->all(),
+            $this->getValiadationRules()
+        );
+        $jsonValidator->validate();
 
-        if(!$question->update($this->questionTransformer->transformInputs($request->all()))){
+        $question = $this->question->findByReferenceOrFail($reference);
+        $data     = $this->questionTransformer->transformInputs($request->all());
+        $question->fill($data);
+
+        if (!$question->save()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
         return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
+    }
+
+    protected function getValiadationRules(): array
+    {
+        return [
+            ResourceQuestion::USER_ID => 'integer',
+            ResourceQuestion::TITLE => 'string|max:255',
+            ResourceQuestion::DESCRIPTION => 'string|max:65535',
+            ResourceQuestion::FEATURED => 'boolean',
+            ResourceQuestion::STICKY => 'boolean',
+        ];
     }
 
     /**
