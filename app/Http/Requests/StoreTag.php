@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Resources\V1\Tag as ResourceTag;
 
 class StoreTag extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreTag extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,8 @@ class StoreTag extends FormRequest
     public function rules()
     {
         return [
-            //
+            ResourceTag::NAME => 'required|string|max:255',
+            ResourceTag::ACTIVE => 'required|boolean',
         ];
     }
 }

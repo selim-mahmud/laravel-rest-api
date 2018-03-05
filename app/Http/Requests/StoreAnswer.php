@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Resources\V1\Answer as ResourceAnswer;
 
 class StoreAnswer extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreAnswer extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,9 @@ class StoreAnswer extends FormRequest
     public function rules()
     {
         return [
-            //
+            ResourceAnswer::QUESTION_ID => 'required|integer',
+            ResourceAnswer::USER_ID => 'required|integer',
+            ResourceAnswer::DESCRIPTION => 'required|string|max:65535',
         ];
     }
 }

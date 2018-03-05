@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\ApiRequest;
+use App\Http\Requests\StoreTag;
 use App\Http\Resources\V1\QuestionCollection;
 use App\Http\Resources\V1\TagCollection;
 use App\Http\Resources\V1\Tag as ResourceTag;
@@ -11,20 +12,29 @@ use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
+use App\StatusMessage;
 use App\Tag;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use App\Transformers\V1\TagTransformer;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class TagController extends ApiController
 {
-    /**
-     * @var Tag $tag
-     */
+    /**@var Tag $tag */
     protected $tag;
+
+    /**@var TagTransformer $tagTransformer */
+    protected $tagTransformer;
 
     /**
      * TagController constructor.
      *
      * @param ApiRequest $request
      * @param Tag $tag
+     * @param TagTransformer $tagTransformer
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
      * @param ApiRelationFilterHandler $relationFilterHandler
@@ -33,6 +43,7 @@ class TagController extends ApiController
     public function __construct(
         ApiRequest $request,
         Tag $tag,
+        TagTransformer $tagTransformer,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler,
@@ -56,6 +67,7 @@ class TagController extends ApiController
         );
 
         $this->tag = $tag;
+        $this->tagTransformer = $tagTransformer;
     }
 
     /**
@@ -92,6 +104,63 @@ class TagController extends ApiController
         $tag = $this->tag->findByReferenceOrFail($reference);
         $tag = $this->getRelatedResourceCollection($tag, Tag::RELATION_QUESTIONS);
         return new QuestionCollection($tag->questions);
+    }
+
+    /**
+     * @param StoreTag $request
+     * @return JsonResponse
+     */
+    public function store(StoreTag $request): JsonResponse
+    {
+        $imputs                      = $this->tagTransformer->transformInputs($request->all());
+        $imputs[Tag::SLUG]      = str_slug($imputs[Tag::NAME]);
+        $imputs[Tag::REFERENCE] = $this->tag->generateUniqueReference();
+
+        try {
+
+            Tag::create($imputs);
+            return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
+
+        } catch (Exception $exception) {
+
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @param $reference
+     * @return JsonResponse
+     */
+    public function update(Request $request, $reference): JsonResponse
+    {
+        $jsonValidator = ValidatorFacade::make(
+            $request->all(),
+            $this->getValiadationRules()
+        );
+        $jsonValidator->validate();
+
+        $question = $this->tag->findByReferenceOrFail($reference);
+        $data     = $this->tagTransformer->transformInputs($request->all());
+        $question->fill($data);
+
+        if (!$question->save()) {
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getValiadationRules(): array
+    {
+        return [
+            ResourceTag::NAME => 'string|max:255',
+            ResourceTag::ACTIVE => 'boolean',
+        ];
     }
 
     /**

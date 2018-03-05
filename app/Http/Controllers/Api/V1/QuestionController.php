@@ -129,6 +129,10 @@ class QuestionController extends ApiController
         return new ResourceUser($question->user);
     }
 
+    /**
+     * @param StoreQuestion $request
+     * @return JsonResponse
+     */
     public function store(StoreQuestion $request): JsonResponse
     {
         $imputs                      = $this->questionTransformer->transformInputs($request->all());
@@ -147,6 +151,11 @@ class QuestionController extends ApiController
 
     }
 
+    /**
+     * @param Request $request
+     * @param $reference
+     * @return JsonResponse
+     */
     public function update(Request $request, $reference): JsonResponse
     {
         $jsonValidator = ValidatorFacade::make(
@@ -166,6 +175,9 @@ class QuestionController extends ApiController
         return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
     }
 
+    /**
+     * @return array
+     */
     protected function getValiadationRules(): array
     {
         return [
@@ -174,6 +186,9 @@ class QuestionController extends ApiController
             ResourceQuestion::DESCRIPTION => 'string|max:65535',
             ResourceQuestion::FEATURED => 'boolean',
             ResourceQuestion::STICKY => 'boolean',
+            ResourceQuestion::SOLVED => 'boolean',
+            ResourceQuestion::UP_VOTE => 'boolean',
+            ResourceQuestion::DOWN_VOTE => 'boolean',
         ];
     }
 
