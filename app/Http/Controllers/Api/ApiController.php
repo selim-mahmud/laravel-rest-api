@@ -13,6 +13,7 @@ use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 
 abstract class ApiController extends Controller
@@ -101,6 +102,8 @@ abstract class ApiController extends Controller
             foreach ($sortingColumns as $column => $direction) {
                 $builder->orderBy($column, $direction);
             }
+        }else{
+            $builder->latest();
         }
 
         // Add any filter based on relations to query builder
@@ -192,5 +195,35 @@ abstract class ApiController extends Controller
         }
 
         return $model;
+    }
+
+    /**
+     * @param string $successMessage
+     * @param int $statusCode
+     * @return JsonResponse
+     */
+    protected function getSuccessResponse(string $successMessage, int $statusCode = 200) : JsonResponse
+    {
+        return JsonResponse::create([
+            'data' => [
+                    'status' => 'success',
+                    'successMessage' => $successMessage
+                ]
+            ], $statusCode);
+    }
+
+    /**
+     * @param string $failMessage
+     * @param int $statusCode
+     * @return JsonResponse
+     */
+    protected function getFailResponse(string $failMessage, int $statusCode = 500) : JsonResponse
+    {
+        return JsonResponse::create([
+            'data' => [
+                    'status' => 'fail',
+                    'failMessage' => $failMessage
+                ]
+            ], $statusCode);
     }
 }

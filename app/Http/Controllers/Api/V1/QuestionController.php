@@ -16,6 +16,8 @@ use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
 use App\Services\ApiRelationFilterHandler;
 use App\Transformers\V1\QuestionTransformer;
+use Exception;
+use Illuminate\Http\JsonResponse;
 
 class QuestionController extends ApiController
 {
@@ -129,7 +131,17 @@ class QuestionController extends ApiController
         $imputs = $this->questionTransformer->transformInputs($request->all());
         $imputs[Question::SLUG] = str_slug($imputs[Question::TITLE]);
         $imputs[Question::REFERENCE] = $this->question->generateUniqueReference();
-        return Question::create($imputs);
+
+        try{
+
+            Question::create($imputs);
+            return $this->getSuccessResponse('Resource has been created successfully.', 201);
+
+        }catch(Exception $exception){
+
+            return $this->getFailResponse('Something bad has been happened. Please try again later.', 500);
+        }
+
     }
 
     /**

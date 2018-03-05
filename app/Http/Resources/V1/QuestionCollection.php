@@ -15,7 +15,11 @@ class QuestionCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => $this->collection,
+            'data' => [
+                'status' => 'success',
+                'successMessage' => 'Resources have been successfully received.',
+                'results' => $this->collection
+            ]
         ];
     }
 }

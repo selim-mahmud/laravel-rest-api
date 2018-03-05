@@ -32,21 +32,25 @@ class Question extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{ModelQuestion::REFERENCE},
-            self::USER_ID => $this->{ModelQuestion::USER_ID},
-            self::TITLE => $this->{ModelQuestion::TITLE},
-            self::SLUG => $this->{ModelQuestion::SLUG},
-            self::DESCRIPTION => $this->{ModelQuestion::DESCRIPTION},
-            $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
-                self::FEATURED => $this->{ModelQuestion::FEATURED},
-                self::STICKY => $this->{ModelQuestion::STICKY},
-                self::SOLVED => $this->{ModelQuestion::SOLVED},
-                self::UP_VOTE => $this->{ModelQuestion::UP_VOTE},
-                self::DOWN_VOTE => $this->{ModelQuestion::DOWN_VOTE},
-            ]),
-            self::RELATION_ANSWERS => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
-            self::RELATION_USER => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),
-            self::RELATION_TAGS => Tag::collection($this->whenLoaded(ModelQuestion::RELATION_TAGS)),
+            'status' => 'success',
+            'successMessage' => 'Resource has been retrieved successfully.',
+            'result' => [
+                self::ID => $this->{ModelQuestion::REFERENCE},
+                self::USER_ID => $this->{ModelQuestion::USER_ID},
+                self::TITLE => $this->{ModelQuestion::TITLE},
+                self::SLUG => $this->{ModelQuestion::SLUG},
+                self::DESCRIPTION => $this->{ModelQuestion::DESCRIPTION},
+                $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
+                    self::FEATURED => $this->{ModelQuestion::FEATURED},
+                    self::STICKY => $this->{ModelQuestion::STICKY},
+                    self::SOLVED => $this->{ModelQuestion::SOLVED},
+                    self::UP_VOTE => $this->{ModelQuestion::UP_VOTE},
+                    self::DOWN_VOTE => $this->{ModelQuestion::DOWN_VOTE},
+                ]),
+                self::RELATION_ANSWERS => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
+                self::RELATION_USER => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),
+                self::RELATION_TAGS => Tag::collection($this->whenLoaded(ModelQuestion::RELATION_TAGS)),
+            ]
         ];
     }
 
