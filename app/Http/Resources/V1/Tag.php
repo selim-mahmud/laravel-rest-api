@@ -21,11 +21,15 @@ class Tag extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{ModelTag::REFERENCE},
-            self::NAME => $this->{ModelTag::NAME},
-            self::SLUG => $this->{ModelTag::SLUG},
-            self::ACTIVE => $this->{ModelTag::ACTIVE},
-            'questions' => Question::collection($this->whenLoaded(ModelTag::RELATION_QUESTIONS)),
+            'status' => 'success',
+            'successMessage' => 'Resource has been retrieved successfully.',
+            'result' => [
+                self::ID => $this->{ModelTag::REFERENCE},
+                self::NAME => $this->{ModelTag::NAME},
+                self::SLUG => $this->{ModelTag::SLUG},
+                self::ACTIVE => $this->{ModelTag::ACTIVE},
+                'questions' => Question::collection($this->whenLoaded(ModelTag::RELATION_QUESTIONS)),
+            ]
         ];
     }
 }
