@@ -143,13 +143,11 @@ class QuestionController extends ApiController
         unset($inputs[Question::TAGS]);
 
         try {
-
             $question = Question::create($inputs);
             $question->tags()->attach($tags);
             return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
 
         } catch (Exception $exception) {
-
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
@@ -160,7 +158,7 @@ class QuestionController extends ApiController
      * @param $reference
      * @return JsonResponse
      */
-    public function update(Request $request, $reference): JsonResponse
+    public function update(Request $request, $reference)
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -168,30 +166,26 @@ class QuestionController extends ApiController
         );
         $jsonValidator->validate();
 
+        /** @var Question $question */
         $question = $this->question->findByReferenceOrFail($reference);
-        $data     = $this->questionTransformer->transformInputs($request->all());
-        $question->fill($data);
+        $inputs     = $this->questionTransformer->transformInputs($request->all());
+
+        if(isset($inputs[Question::TAGS])){
+            $tags = $inputs[Question::TAGS];
+            unset($inputs[Question::TAGS]);
+        }
+
+        $question->fill($inputs);
 
         if (!$question->save()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
-        return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
-    }
+        if(isset($tags)){
+            $question->tags()->sync($tags);
+        }
 
-    /**
-     * @return array
-     */
-    protected function getCreateValiadationRules(): array
-    {
-        return [
-            ResourceQuestion::USER_ID => 'required|integer',
-            ResourceQuestion::TITLE => 'required|string|max:255',
-            ResourceQuestion::DESCRIPTION => 'required|string|max:65535',
-            ResourceQuestion::FEATURED => 'required|boolean',
-            ResourceQuestion::STICKY => 'required|boolean',
-            ResourceQuestion::TAGS => 'required|array|tags',
-        ];
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
     }
 
     /**
@@ -208,6 +202,7 @@ class QuestionController extends ApiController
             ResourceQuestion::SOLVED => 'boolean',
             ResourceQuestion::UP_VOTE => 'boolean',
             ResourceQuestion::DOWN_VOTE => 'boolean',
+            ResourceQuestion::TAGS => 'tags',
         ];
     }
 
