@@ -23,6 +23,7 @@ class QuestionTransformer
             ResourceQuestion::SOLVED => Question::SOLVED,
             ResourceQuestion::UP_VOTE => Question::UP_VOTE,
             ResourceQuestion::DOWN_VOTE => Question::DOWN_VOTE,
+            ResourceQuestion::TAGS => Question::TAGS,
         ];
     }
 

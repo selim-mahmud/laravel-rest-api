@@ -30,6 +30,7 @@ class StoreQuestion extends FormRequest
             ResourceQuestion::DESCRIPTION => 'required|string|max:65535',
             ResourceQuestion::FEATURED => 'required|boolean',
             ResourceQuestion::STICKY => 'required|boolean',
+            ResourceQuestion::TAGS => 'required|tags',
         ];
     }
 }

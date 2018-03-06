@@ -135,13 +135,17 @@ class QuestionController extends ApiController
      */
     public function store(StoreQuestion $request): JsonResponse
     {
-        $imputs                      = $this->questionTransformer->transformInputs($request->all());
-        $imputs[Question::SLUG]      = str_slug($imputs[Question::TITLE]);
-        $imputs[Question::REFERENCE] = $this->question->generateUniqueReference();
+        $inputs                      = $this->questionTransformer->transformInputs($request->all());
+        $inputs[Question::REFERENCE] = $this->question->generateUniqueReference();
+        $inputs[Question::SLUG]      = str_slug($inputs[Question::TITLE]);
+
+        $tags = $inputs[Question::TAGS];
+        unset($inputs[Question::TAGS]);
 
         try {
 
-            Question::create($imputs);
+            $question = Question::create($inputs);
+            $question->tags()->attach($tags);
             return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
 
         } catch (Exception $exception) {
@@ -160,7 +164,7 @@ class QuestionController extends ApiController
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
-            $this->getValiadationRules()
+            $this->getUpdateValiadationRules()
         );
         $jsonValidator->validate();
 
@@ -178,7 +182,22 @@ class QuestionController extends ApiController
     /**
      * @return array
      */
-    protected function getValiadationRules(): array
+    protected function getCreateValiadationRules(): array
+    {
+        return [
+            ResourceQuestion::USER_ID => 'required|integer',
+            ResourceQuestion::TITLE => 'required|string|max:255',
+            ResourceQuestion::DESCRIPTION => 'required|string|max:65535',
+            ResourceQuestion::FEATURED => 'required|boolean',
+            ResourceQuestion::STICKY => 'required|boolean',
+            ResourceQuestion::TAGS => 'required|array|tags',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getUpdateValiadationRules(): array
     {
         return [
             ResourceQuestion::USER_ID => 'integer',

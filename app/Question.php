@@ -40,6 +40,7 @@ class Question extends ReferencedModel
     const SOLVED = 'solved';
     const UP_VOTE = 'up_vote';
     const DOWN_VOTE = 'down_vote';
+    const TAGS = 'tags';
 
     const RELATION_ANSWERS = 'answers';
     const RELATION_USER = 'user';
