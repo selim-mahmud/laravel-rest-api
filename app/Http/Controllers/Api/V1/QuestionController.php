@@ -158,7 +158,7 @@ class QuestionController extends ApiController
      * @param $reference
      * @return JsonResponse
      */
-    public function update(Request $request, $reference)
+    public function update(Request $request, $reference) : JsonResponse
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),

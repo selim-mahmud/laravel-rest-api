@@ -16,6 +16,7 @@ class UserTransformer
             ResourceUser::ID => User::REFERENCE,
             ResourceUser::NAME => User::NAME,
             ResourceUser::EMAIL => User::EMAIL,
+            ResourceUser::PASSWORD => User::PASSWORD,
             ResourceUser::ACTIVE => User::ACTIVE,
             ResourceUser::ACTIVATION_TOKEN => User::ACTIVATION_TOKEN,
             ResourceUser::REMEMBER_TOKEN => User::REMEMBER_TOKEN,

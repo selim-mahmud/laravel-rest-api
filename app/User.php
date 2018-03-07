@@ -39,24 +39,14 @@ class User extends ReferencedModel
     const RELATION_ANSWERS = 'answers';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        self::NAME,
-        self::EMAIL,
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        self::PASSWORD,
-        self::ACTIVATION_TOKEN,
-        self::REMEMBER_TOKEN,
+    protected $guarded = [
+        self::ID,
+        self::CREATED_AT,
+        self::UPDATED_AT,
     ];
 
     /**

@@ -11,6 +11,8 @@ class User extends Resource
     const ID = 'id';
     const NAME = 'name';
     const EMAIL = 'email';
+    const PASSWORD = 'password';
+    const PASSWORD_CONFIRMATION = 'password_confirmation';
     const ACTIVE = 'active';
     const ACTIVATION_TOKEN = 'activation_token';
     const REMEMBER_TOKEN = 'remember_token';
@@ -32,6 +34,7 @@ class User extends Resource
                 self::EMAIL => $this->{ModelUser::EMAIL},
                 $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,
                     [
+                        self::PASSWORD => $this->{ModelUser::PASSWORD},
                         self::ACTIVE => $this->{ModelUser::ACTIVE},
                         self::ACTIVATION_TOKEN => $this->{ModelUser::ACTIVATION_TOKEN},
                         self::REMEMBER_TOKEN => $this->{ModelUser::REMEMBER_TOKEN},

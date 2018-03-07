@@ -122,18 +122,18 @@ class UserController extends ApiController
      * @param StoreUser $request
      * @return JsonResponse
      */
-    public function store(StoreUser $request): JsonResponse
+    public function store(StoreUser $request) : JsonResponse
     {
-        $imputs                  = $this->userTransformer->transformInputs($request->all());
-        $imputs[User::REFERENCE] = $this->user->generateUniqueReference();
+        $request->merge([ResourceUser::PASSWORD => app('hash')->make($request->{ResourceUser::PASSWORD})]);
+        $inputs                  = $this->userTransformer->transformInputs($request->all());
+        $inputs[User::REFERENCE] = $this->user->generateUniqueReference();
 
         try {
 
-            User::create($imputs);
+            User::create($inputs);
             return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
 
         } catch (Exception $exception) {
-
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
@@ -172,6 +172,7 @@ class UserController extends ApiController
             ResourceUser::NAME => 'string|max:255',
             ResourceUser::EMAIL => 'email',
             ResourceUser::ACTIVE => 'string|max:255',
+            ResourceUser::PASSWORD => 'string|confirmed|Max:20|Min:5',
             ResourceUser::ACTIVATION_TOKEN => 'string|max:255',
             ResourceUser::REMEMBER_TOKEN => 'string|max:255',
         ];
