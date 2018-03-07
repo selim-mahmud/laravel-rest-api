@@ -26,7 +26,7 @@ class StoreUser extends FormRequest
     {
         return [
             ResourceUser::NAME => 'required|string|max:255',
-            ResourceUser::EMAIL => 'required|email',
+            ResourceUser::EMAIL => 'required|email|unique:users,email',
             ResourceUser::PASSWORD => 'required|confirmed|string|Max:20|Min:5',
         ];
     }

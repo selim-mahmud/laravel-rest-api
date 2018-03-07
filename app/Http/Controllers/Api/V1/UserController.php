@@ -130,7 +130,8 @@ class UserController extends ApiController
 
         try {
 
-            User::create($inputs);
+            $user = User::create($inputs);
+            $user->assignRole('member');
             return $this->getSuccessResponse(StatusMessage::RESOURCE_CREATED, Response::HTTP_CREATED);
 
         } catch (Exception $exception) {
@@ -144,7 +145,7 @@ class UserController extends ApiController
      * @param $reference
      * @return JsonResponse
      */
-    public function update(Request $request, $reference): JsonResponse
+    public function update(Request $request, $reference)
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -153,6 +154,11 @@ class UserController extends ApiController
         $jsonValidator->validate();
 
         $user = $this->user->findByReferenceOrFail($reference);
+
+        if($request->has(ResourceUser::PASSWORD)){
+            $request->merge([ResourceUser::PASSWORD => app('hash')->make($request->{ResourceUser::PASSWORD})]);
+        }
+
         $data = $this->userTransformer->transformInputs($request->all());
         $user->fill($data);
 
@@ -170,7 +176,7 @@ class UserController extends ApiController
     {
         return [
             ResourceUser::NAME => 'string|max:255',
-            ResourceUser::EMAIL => 'email',
+            ResourceUser::EMAIL => 'email|unique:users,email',
             ResourceUser::ACTIVE => 'string|max:255',
             ResourceUser::PASSWORD => 'string|confirmed|Max:20|Min:5',
             ResourceUser::ACTIVATION_TOKEN => 'string|max:255',

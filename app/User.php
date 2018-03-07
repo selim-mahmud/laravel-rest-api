@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * Class User
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class User extends ReferencedModel
 {
-    use Authenticatable;
+    use Authenticatable, HasRoles;
 
     const ID = 'id';
     const REFERENCE = 'reference';
