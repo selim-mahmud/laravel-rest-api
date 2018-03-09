@@ -170,6 +170,21 @@ class UserController extends ApiController
     }
 
     /**
+     * @param $reference
+     * @return JsonResponse
+     */
+    public function destroy($reference): JsonResponse
+    {
+        $user = $this->user->findByReferenceOrFail($reference);
+
+        if (!$user->delete()) {
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_DELETED);
+    }
+
+    /**
      * @return array
      */
     protected function getValiadationRules(): array

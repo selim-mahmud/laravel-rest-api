@@ -153,6 +153,21 @@ class TagController extends ApiController
     }
 
     /**
+     * @param $reference
+     * @return JsonResponse
+     */
+    public function destroy($reference): JsonResponse
+    {
+        $tag = $this->tag->findByReferenceOrFail($reference);
+
+        if (!$tag->delete()) {
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_DELETED);
+    }
+
+    /**
      * @return array
      */
     protected function getValiadationRules(): array

@@ -158,7 +158,7 @@ class QuestionController extends ApiController
      * @param $reference
      * @return JsonResponse
      */
-    public function update(Request $request, $reference) : JsonResponse
+    public function update(Request $request, $reference): JsonResponse
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -168,9 +168,9 @@ class QuestionController extends ApiController
 
         /** @var Question $question */
         $question = $this->question->findByReferenceOrFail($reference);
-        $inputs     = $this->questionTransformer->transformInputs($request->all());
+        $inputs   = $this->questionTransformer->transformInputs($request->all());
 
-        if(isset($inputs[Question::TAGS])){
+        if (isset($inputs[Question::TAGS])) {
             $tags = $inputs[Question::TAGS];
             unset($inputs[Question::TAGS]);
         }
@@ -181,11 +181,26 @@ class QuestionController extends ApiController
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
         }
 
-        if(isset($tags)){
+        if (isset($tags)) {
             $question->tags()->sync($tags);
         }
 
         return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
+    }
+
+    /**
+     * @param $reference
+     * @return JsonResponse
+     */
+    public function destroy($reference): JsonResponse
+    {
+        $question = $this->question->findByReferenceOrFail($reference);
+
+        if (!$question->delete()) {
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_DELETED);
     }
 
     /**

@@ -163,6 +163,21 @@ class AnswerController extends ApiController
     }
 
     /**
+     * @param $reference
+     * @return JsonResponse
+     */
+    public function destroy($reference): JsonResponse
+    {
+        $answer = $this->answer->findByReferenceOrFail($reference);
+
+        if (!$answer->delete()) {
+            return $this->getFailResponse(StatusMessage::COMMON_FAIL);
+        }
+
+        return $this->getSuccessResponse(StatusMessage::RESOURCE_DELETED);
+    }
+
+    /**
      * @return array
      */
     protected function getValiadationRules(): array

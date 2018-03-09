@@ -20,13 +20,12 @@ Route::get('/', function () {
 
 Route::get('/create-role', function () {
 
-    //Role::create(['name' => 'admin']);
-    //Role::create(['name' => 'member']);
+    Role::create(['name' => 'admin']);
+    Role::create(['name' => 'member']);
     $userIds = User::all()->pluck('id');
     $role = 'admin';
     foreach ($userIds as $id){
         $user = User::find($id);
-        dd($user);
         $user->assignRole($role);
         $role = 'member';
     }
