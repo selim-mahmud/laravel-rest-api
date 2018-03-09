@@ -13,4 +13,5 @@ class StatusMessage
     const RESOURCE_NOT_FOUND = 'Requested resource has not been found.';
     const MAINTENANCE_MODE = 'Our service is under maintenance. Please try again later.';
     const VALIDATION_ERROR = 'Invalid data has been provided.';
+    const UNAUTHORIZED_ERROR = 'Access is not authorized.';
 }

@@ -16,8 +16,7 @@ class User extends Resource
     const ACTIVE = 'active';
     const ACTIVATION_TOKEN = 'activation_token';
     const REMEMBER_TOKEN = 'remember_token';
-    const ROLE = 'role';
-
+    const ROLES = 'roles';
     /**
      * Transform the resource into an array.
      *
@@ -39,7 +38,7 @@ class User extends Resource
                         self::ACTIVE => $this->{ModelUser::ACTIVE},
                         self::ACTIVATION_TOKEN => $this->{ModelUser::ACTIVATION_TOKEN},
                         self::REMEMBER_TOKEN => $this->{ModelUser::REMEMBER_TOKEN},
-                        self::ROLE => $this->{ModelUser::REMEMBER_TOKEN},
+                        self::ROLES => $this->getRoleNames(),
                     ]),
                 'questions' => Question::collection($this->whenLoaded(ModelUser::RELATION_QUESTIONS)),
                 'answers' => Answer::collection($this->whenLoaded(ModelUser::RELATION_ANSWERS)),

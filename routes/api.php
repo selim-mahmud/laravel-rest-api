@@ -36,10 +36,10 @@ Route::group([
 
 // route for /api
 Route::any('/', function() {
-    throw new NotFoundHttpException('path does not exist:/');
+    throw new NotFoundHttpException();
 });
 
 // catch all route for any route under /api/
 Route::any('{path}', function($path) {
-    throw new NotFoundHttpException('Path does not exist:'.$path);
+    throw new NotFoundHttpException();
 })->where('path', '.*');

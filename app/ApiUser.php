@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class ApiUser
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $active
  * @property string $activation_token
  */
-class ApiUser extends Model
+class ApiUser extends Authenticatable
 {
     const ID = 'id';
     const NAME = 'name';
@@ -32,5 +32,14 @@ class ApiUser extends Model
     protected $fillable = [
         self::NAME,
         self::USER_NAME,
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password'
     ];
 }
