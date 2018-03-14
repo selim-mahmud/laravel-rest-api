@@ -17,6 +17,13 @@ use Illuminate\Support\Collection;
 abstract class ReferencedModel extends Model
 {
     const FIELD_REFERENCE = 'reference';
+    const REFERENCE_MUTATOR = self::REFERENCE_MUTATOR_UPPER;
+
+    const REFERENCE_MUTATOR_NONE = 'none';
+    const REFERENCE_MUTATOR_UPPER = 'upper';
+    const REFERENCE_MUTATOR_LOWER = 'lower';
+
+    protected $referenceLength = 16;
 
     function __construct(array $attributes = [])
     {
@@ -29,6 +36,13 @@ abstract class ReferencedModel extends Model
     public function getReferenceName(): string
     {
         return self::FIELD_REFERENCE;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReferenceLength() {
+        return $this->referenceLength;
     }
 
     /**
@@ -91,7 +105,27 @@ abstract class ReferencedModel extends Model
             $reference = str_random();
         }
 
+        do {
+            $reference = $this->mutateReference(str_random($this->getReferenceLength()));
+        } while($this->newQuery()->where($this->getReferenceName(), $reference)->first());
+
         return $reference;
+    }
+
+    /**
+     * @param string $reference
+     * @return string
+     */
+    protected function mutateReference($reference) {
+        switch (static::REFERENCE_MUTATOR) {
+            case self::REFERENCE_MUTATOR_UPPER:
+                return strtoupper($reference);
+            case self::REFERENCE_MUTATOR_LOWER:
+                return strtolower($reference);
+            case self::REFERENCE_MUTATOR_NONE:
+            default:
+                return $reference;
+        }
     }
 
 }
