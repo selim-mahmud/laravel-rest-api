@@ -23,7 +23,7 @@ class AuthenticateApiWithBasicAuth extends AuthenticateWithBasicAuth
         if($this->auth->guard($guard)->onceBasic('user_name')) {
             throw new AuthenticationException();
         }
-        
+
         return $next($request);
 
     }

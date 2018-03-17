@@ -42,9 +42,9 @@ class Question extends Resource
                 self::SLUG => $this->{ModelQuestion::SLUG},
                 self::DESCRIPTION => $this->{ModelQuestion::DESCRIPTION},
                 $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL, [
-                    self::FEATURED => $this->{ModelQuestion::FEATURED},
-                    self::STICKY => $this->{ModelQuestion::STICKY},
-                    self::SOLVED => $this->{ModelQuestion::SOLVED},
+                    self::FEATURED => (boolean) $this->{ModelQuestion::FEATURED},
+                    self::STICKY => (boolean) $this->{ModelQuestion::STICKY},
+                    self::SOLVED => (boolean) $this->{ModelQuestion::SOLVED},
                     self::UP_VOTE => $this->{ModelQuestion::UP_VOTE},
                     self::DOWN_VOTE => $this->{ModelQuestion::DOWN_VOTE},
                 ]),

@@ -36,7 +36,7 @@ class Answer extends Resource
                 self::DESCRIPTION => $this->{ModelAnswer::DESCRIPTION},
                 $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,
                     [
-                        self::EXCEPTED => $this->{ModelAnswer::EXCEPTED},
+                        self::EXCEPTED => (boolean) $this->{ModelAnswer::EXCEPTED},
                         self::UP_VOTE => $this->{ModelAnswer::UP_VOTE},
                         self::DOWN_VOTE => $this->{ModelAnswer::DOWN_VOTE},
                     ]),

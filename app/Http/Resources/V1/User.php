@@ -35,7 +35,7 @@ class User extends Resource
                 $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,
                     [
                         self::PASSWORD => $this->{ModelUser::PASSWORD},
-                        self::ACTIVE => $this->{ModelUser::ACTIVE},
+                        self::ACTIVE => (boolean) $this->{ModelUser::ACTIVE},
                         self::ACTIVATION_TOKEN => $this->{ModelUser::ACTIVATION_TOKEN},
                         self::REMEMBER_TOKEN => $this->{ModelUser::REMEMBER_TOKEN},
                         self::ROLES => $this->getRoleNames(),
