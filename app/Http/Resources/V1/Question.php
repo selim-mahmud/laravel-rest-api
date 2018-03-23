@@ -33,9 +33,6 @@ class Question extends Resource
     public function toArray($request)
     {
         return [
-            'status' => 'success',
-            'successMessage' => 'Resource has been retrieved successfully.',
-            'result' => [
                 self::ID => $this->{ModelQuestion::REFERENCE},
                 self::USER_ID => $this->{ModelQuestion::USER_ID},
                 self::TITLE => $this->{ModelQuestion::TITLE},
@@ -51,7 +48,6 @@ class Question extends Resource
                 self::RELATION_ANSWERS => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
                 self::RELATION_USER => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),
                 self::RELATION_TAGS => Tag::collection($this->whenLoaded(ModelQuestion::RELATION_TAGS)),
-            ]
         ];
     }
 

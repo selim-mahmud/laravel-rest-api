@@ -26,23 +26,19 @@ class Answer extends Resource
     {
 
         return [
-            'status' => 'success',
-            'successMessage' => 'Resource has been retrieved successfully.',
-            'result' => [
-                self::ID => $this->{ModelAnswer::REFERENCE},
-                self::USER_ID => $this->{ModelAnswer::USER_ID},
-                self::USER_ID => $this->{ModelAnswer::USER_ID},
-                self::QUESTION_ID => $this->{ModelAnswer::QUESTION_ID},
-                self::DESCRIPTION => $this->{ModelAnswer::DESCRIPTION},
-                $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,
-                    [
-                        self::EXCEPTED => (boolean) $this->{ModelAnswer::EXCEPTED},
-                        self::UP_VOTE => $this->{ModelAnswer::UP_VOTE},
-                        self::DOWN_VOTE => $this->{ModelAnswer::DOWN_VOTE},
-                    ]),
-                'user' => new User($this->whenLoaded(ModelAnswer::RELATION_USER)),
-                'question' => new Question($this->whenLoaded(ModelAnswer::RELATION_QUESTION)),
-            ]
+            self::ID => $this->{ModelAnswer::REFERENCE},
+            self::USER_ID => $this->{ModelAnswer::USER_ID},
+            self::USER_ID => $this->{ModelAnswer::USER_ID},
+            self::QUESTION_ID => $this->{ModelAnswer::QUESTION_ID},
+            self::DESCRIPTION => $this->{ModelAnswer::DESCRIPTION},
+            $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,
+                [
+                    self::EXCEPTED => (boolean) $this->{ModelAnswer::EXCEPTED},
+                    self::UP_VOTE => $this->{ModelAnswer::UP_VOTE},
+                    self::DOWN_VOTE => $this->{ModelAnswer::DOWN_VOTE},
+                ]),
+            'user' => new User($this->whenLoaded(ModelAnswer::RELATION_USER)),
+            'question' => new Question($this->whenLoaded(ModelAnswer::RELATION_QUESTION)),
         ];
     }
 }

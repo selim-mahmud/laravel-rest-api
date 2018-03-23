@@ -15,11 +15,7 @@ class TagCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => [
-                'status' => 'success',
-                'successMessage' => 'Resources have been successfully received.',
-                'results' => $this->collection
-            ]
+            $this->collection
         ];
     }
 }
