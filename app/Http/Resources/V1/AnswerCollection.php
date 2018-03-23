@@ -15,7 +15,7 @@ class AnswerCollection extends ResourceCollection
     public function toArray($request)
     {
         return [
-            $this->collection
+            'results' => $this->collection
         ];
     }
 }
