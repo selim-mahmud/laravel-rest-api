@@ -18,6 +18,9 @@ class Question extends Resource
     const SOLVED = 'solved';
     const UP_VOTE = 'up_vote';
     const DOWN_VOTE = 'down_vote';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+    const ANSWERS = 'answers';
     const TAGS = 'tags';
 
     const RELATION_ANSWERS = 'answers';
@@ -44,6 +47,8 @@ class Question extends Resource
                     self::SOLVED => (boolean) $this->{ModelQuestion::SOLVED},
                     self::UP_VOTE => $this->{ModelQuestion::UP_VOTE},
                     self::DOWN_VOTE => $this->{ModelQuestion::DOWN_VOTE},
+                    self::CREATED_AT => $this->{ModelQuestion::CREATED_AT},
+                    self::UPDATED_AT => $this->{ModelQuestion::UPDATED_AT},
                 ]),
                 self::RELATION_ANSWERS => Answer::collection($this->whenLoaded(ModelQuestion::RELATION_ANSWERS)),
                 self::RELATION_USER => new User($this->whenLoaded(ModelQuestion::RELATION_USER)),

@@ -17,6 +17,8 @@ class TagTransformer
             ResourceTag::NAME => Tag::NAME,
             ResourceTag::SLUG => Tag::SLUG,
             ResourceTag::ACTIVE => Tag::ACTIVE,
+            ResourceTag::CREATED_AT => Tag::CREATED_AT,
+            ResourceTag::UPDATED_AT => Tag::UPDATED_AT,
         ];
     }
 

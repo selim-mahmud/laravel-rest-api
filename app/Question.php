@@ -53,8 +53,6 @@ class Question extends ReferencedModel
      */
     protected $guarded = [
         self::ID,
-        self::CREATED_AT,
-        self::UPDATED_AT,
     ];
 
     /**

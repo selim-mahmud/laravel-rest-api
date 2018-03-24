@@ -11,6 +11,8 @@ class Tag extends Resource
     const NAME = 'name';
     const SLUG = 'slug';
     const ACTIVE = 'active';
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
     /**
      * Transform the resource into an array.
@@ -25,6 +27,8 @@ class Tag extends Resource
             self::NAME => $this->{ModelTag::NAME},
             self::SLUG => $this->{ModelTag::SLUG},
             self::ACTIVE => (boolean) $this->{ModelTag::ACTIVE},
+            self::CREATED_AT => $this->{ModelTag::CREATED_AT},
+            self::UPDATED_AT => $this->{ModelTag::UPDATED_AT},
             'questions' => Question::collection($this->whenLoaded(ModelTag::RELATION_QUESTIONS)),
         ];
     }

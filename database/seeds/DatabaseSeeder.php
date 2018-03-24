@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         //seed api_user table
-        factory(App\ApiUser::class, 10)->create();
+        factory(App\ApiUser::class, 1)->create();
 
         //seed tag table
         factory(App\Tag::class, 10)->create();

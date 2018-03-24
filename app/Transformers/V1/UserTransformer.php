@@ -20,6 +20,8 @@ class UserTransformer
             ResourceUser::ACTIVE => User::ACTIVE,
             ResourceUser::ACTIVATION_TOKEN => User::ACTIVATION_TOKEN,
             ResourceUser::REMEMBER_TOKEN => User::REMEMBER_TOKEN,
+            ResourceUser::CREATED_AT => User::CREATED_AT,
+            ResourceUser::UPDATED_AT => User::UPDATED_AT,
         ];
     }
 

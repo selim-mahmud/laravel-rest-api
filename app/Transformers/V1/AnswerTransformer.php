@@ -21,6 +21,8 @@ class AnswerTransformer
             ResourceAnswer::EXCEPTED => Answer::EXCEPTED,
             ResourceAnswer::UP_VOTE => Answer::UP_VOTE,
             ResourceAnswer::DOWN_VOTE => Answer::DOWN_VOTE,
+            ResourceAnswer::CREATED_AT => Answer::CREATED_AT,
+            ResourceAnswer::UPDATED_AT => Answer::UPDATED_AT,
         ];
     }
 

@@ -30,8 +30,8 @@ $factory->define(App\ApiUser::class, function (Faker\Generator $faker) {
 
     return [
         'reference' => str_random(),
-        'name' => $faker->name,
-        'user_name' => $faker->unique()->userName,
+        'name' => 'Selim Madmud',
+        'user_name' => 'smahmud',
         'password' => $password ?: $password = app('hash')->make('password'),
         'active' => $faker->boolean(80)
     ];
@@ -40,7 +40,7 @@ $factory->define(App\ApiUser::class, function (Faker\Generator $faker) {
 $factory->define(App\Tag::class, function (Faker\Generator $faker) {
     return [
         'reference' => str_random(),
-        'name' => $faker->unique()->text(40),
+        'name' => $faker->unique()->text(15),
         'slug' => function (array $tag) {
             return str_slug($tag['name']);
         },
