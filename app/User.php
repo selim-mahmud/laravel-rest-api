@@ -46,6 +46,7 @@ class User extends ReferencedModel
      */
     protected $guarded = [
         self::ID,
+        self::PASSWORD,
     ];
 
     /**

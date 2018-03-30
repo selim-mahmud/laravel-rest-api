@@ -20,6 +20,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class UserController extends ApiController
@@ -122,7 +123,7 @@ class UserController extends ApiController
      * @param StoreUser $request
      * @return JsonResponse
      */
-    public function store(StoreUser $request) : JsonResponse
+    public function store(StoreUser $request): JsonResponse
     {
         $request->merge([ResourceUser::PASSWORD => app('hash')->make($request->{ResourceUser::PASSWORD})]);
         $inputs                  = $this->userTransformer->transformInputs($request->all());
@@ -155,7 +156,7 @@ class UserController extends ApiController
 
         $user = $this->user->findByReferenceOrFail($reference);
 
-        if($request->has(ResourceUser::PASSWORD)){
+        if ($request->has(ResourceUser::PASSWORD)) {
             $request->merge([ResourceUser::PASSWORD => app('hash')->make($request->{ResourceUser::PASSWORD})]);
         }
 
@@ -167,6 +168,49 @@ class UserController extends ApiController
         }
 
         return $this->getSuccessResponse(StatusMessage::RESOURCE_UPDATED);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return ResourceUser|JsonResponse
+     */
+    public function login(Request $request)
+    {
+        $jsonValidator = ValidatorFacade::make(
+            $request->all(),
+            [
+                ResourceUser::EMAIL => 'required|email',
+                ResourceUser::PASSWORD => 'required|string|Max:20|Min:5',
+            ]
+        );
+        $jsonValidator->validate();
+
+        $user = $this->loginAttempt($request->get(ResourceUser::EMAIL), $request->get(ResourceUser::PASSWORD));
+
+        if($user){
+            return new ResourceUser($user);
+        }
+
+        return $this->getFailResponse(StatusMessage::LOGIN_FAIL, Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * @param $email
+     * @param $password
+     * @return bool|\Illuminate\Database\Eloquent\Model|null|static
+     */
+    protected function loginAttempt($email, $password)
+    {
+        $user = $this->user->where(User::EMAIL, $email)->first();
+
+        if($user){
+            if(password_verify($password, $user->password)){
+                return $user;
+            }
+        }
+
+        return false;
     }
 
     /**

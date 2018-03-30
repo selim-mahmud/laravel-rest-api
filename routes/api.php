@@ -29,6 +29,7 @@ Route::group([
     Route::resource('tags', 'TagController');
     Route::get('tags/{reference}/questions', 'TagController@getQuestions');
     Route::resource('users', 'UserController');
+    Route::post('users/login', 'UserController@login');
     Route::get('users/{reference}/questions', 'UserController@getQuestions');
     Route::get('users/{reference}/answers', 'UserController@getAnswers');
 });
