@@ -37,7 +37,7 @@ class Question extends Resource
     {
         return [
                 self::ID => encrypt($this->{ModelQuestion::ID}),
-                self::USER_ID => $this->{ModelQuestion::USER_ID},
+                self::USER_ID => encrypt($this->{ModelQuestion::USER_ID}),
                 self::TITLE => $this->{ModelQuestion::TITLE},
                 self::SLUG => $this->{ModelQuestion::SLUG},
                 self::DESCRIPTION => $this->{ModelQuestion::DESCRIPTION},
