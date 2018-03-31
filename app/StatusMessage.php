@@ -14,5 +14,5 @@ class StatusMessage
     const MAINTENANCE_MODE = 'Our service is under maintenance. Please try again later.';
     const VALIDATION_ERROR = 'Invalid data has been provided.';
     const UNAUTHORIZED_ERROR = 'Access is not authorized.';
-    const LOGIN_FAIL = 'Invalid email/password.';
+    const LOGIN_FAIL = 'Wrong email/password.';
 }

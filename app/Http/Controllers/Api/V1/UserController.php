@@ -191,7 +191,7 @@ class UserController extends ApiController
             return new ResourceUser($user);
         }
 
-        return $this->getFailResponse(StatusMessage::LOGIN_FAIL, Response::HTTP_UNAUTHORIZED);
+        return $this->getSuccessResponse(StatusMessage::LOGIN_FAIL);
     }
 
     /**
