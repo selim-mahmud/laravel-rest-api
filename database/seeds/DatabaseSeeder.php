@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             $questionCount = rand(10, 50);
             factory(App\Question::class, $questionCount)->create(['user_id'=>$user->id])->each(function ($question) use ($user){
                 //seed answer table
-                $answerCount = rand(5, 10);
+                $answerCount = rand(0, 10);
                 factory(App\Answer::class, $answerCount)->create(['question_id' => $question->id, 'user_id' => $user->id]);
             });
         });
