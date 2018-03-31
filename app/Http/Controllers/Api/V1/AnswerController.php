@@ -67,7 +67,7 @@ class AnswerController extends ApiController
             )
         );
 
-        $this->answer = $answer;
+        $this->answer            = $answer;
         $this->answerTransformer = $answerTransformer;
     }
 
@@ -86,34 +86,34 @@ class AnswerController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param string $reference
+     * @param string $id
      * @return ResourceAnswer
      */
-    public function show($reference) : ResourceAnswer
+    public function show(string $id): ResourceAnswer
     {
-        $model = $this->answer->findByReferenceOrFail($reference);
+        $model = $this->answer->findOrFail(decrypt($id));
         return new ResourceAnswer($this->getSingleResource($model));
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return ResourceQuestion
      */
-    public function getQuestion(string $reference) : ResourceQuestion
+    public function getQuestion(string $id): ResourceQuestion
     {
         /** @var Answer $answer */
-        $answer = $this->answer->findByReferenceOrFail($reference)->load(Answer::RELATION_QUESTION);
+        $answer = $this->answer->findOrFail(decrypt($id))->load(Answer::RELATION_QUESTION);
         return new ResourceQuestion($answer->question);
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return ResourceUser
      */
-    public function getUser(string $reference) : ResourceUser
+    public function getUser(string $id): ResourceUser
     {
         /** @var Answer $answer */
-        $answer = $this->answer->findByReferenceOrFail($reference)->load(Answer::RELATION_USER);
+        $answer = $this->answer->findOrFail(decrypt($id))->load(Answer::RELATION_USER);
         return new ResourceUser($answer->user);
     }
 
@@ -123,8 +123,7 @@ class AnswerController extends ApiController
      */
     public function store(StoreAnswer $request): JsonResponse
     {
-        $imputs                      = $this->answerTransformer->transformInputs($request->all());
-        $imputs[Answer::REFERENCE] = $this->answer->generateUniqueReference();
+        $imputs = $this->answerTransformer->transformInputs($request->all());
 
         try {
 
@@ -140,10 +139,10 @@ class AnswerController extends ApiController
 
     /**
      * @param Request $request
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function update(Request $request, $reference): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -151,8 +150,8 @@ class AnswerController extends ApiController
         );
         $jsonValidator->validate();
 
-        $answer = $this->answer->findByReferenceOrFail($reference);
-        $data     = $this->answerTransformer->transformInputs($request->all());
+        $answer = $this->answer->findOrFail(decrypt($id));
+        $data   = $this->answerTransformer->transformInputs($request->all());
         $answer->fill($data);
 
         if (!$answer->save()) {
@@ -163,12 +162,12 @@ class AnswerController extends ApiController
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function destroy($reference): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
-        $answer = $this->answer->findByReferenceOrFail($reference);
+        $answer = $this->answer->findOrFail(decrypt($id));
 
         if (!$answer->delete()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
@@ -195,10 +194,10 @@ class AnswerController extends ApiController
     /**
      * @return array
      */
-    protected function getFilterableFields() {
+    protected function getFilterableFields()
+    {
         return [
             Answer::ID,
-            Answer::REFERENCE,
             Answer::USER_ID,
             Answer::QUESTION_ID,
             Answer::DESCRIPTION,
@@ -211,10 +210,10 @@ class AnswerController extends ApiController
     /**
      * @return array
      */
-    protected function getSortableFields() {
+    protected function getSortableFields()
+    {
         return [
             Answer::ID,
-            Answer::REFERENCE,
             Answer::USER_ID,
             Answer::QUESTION_ID,
             Answer::DESCRIPTION,
@@ -227,7 +226,8 @@ class AnswerController extends ApiController
     /**
      * @return array
      */
-    protected function getRelationNames() {
+    protected function getRelationNames()
+    {
 
         return [
             Answer::RELATION_USER,

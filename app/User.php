@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Permission\Traits\HasRoles;
@@ -12,7 +12,6 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @package App
  * @property int $id
- * @property string $reference
  * @property string $name
  * @property string $email
  * @property string $password
@@ -23,12 +22,11 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection questions
  * @property Collection answers
  */
-class User extends ReferencedModel
+class User extends Authenticatable
 {
-    use Authenticatable, HasRoles;
+    use HasRoles;
 
     const ID = 'id';
-    const REFERENCE = 'reference';
     const NAME = 'name';
     const EMAIL = 'email';
     const PASSWORD = 'password';

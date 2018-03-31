@@ -28,7 +28,7 @@ class User extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{ModelUser::REFERENCE},
+            self::ID => encrypt($this->{ModelUser::ID}),
             self::NAME => $this->{ModelUser::NAME},
             self::EMAIL => $this->{ModelUser::EMAIL},
             $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,

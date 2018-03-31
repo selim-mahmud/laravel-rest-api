@@ -6,7 +6,7 @@ use App\ApiColumnFilter;
 use App\ApiQueryRelation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiRequest;
-use App\ReferencedModel;
+use Illuminate\Database\Eloquent\Model;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
@@ -61,10 +61,10 @@ abstract class ApiController extends Controller
         ApiColumnSortingHandler $columnSortingHandlerService
     )
     {
-        $this->request = $request;
-        $this->queryFilterHandler = $filterHandlerService;
-        $this->relationAdditionService = $relationAdditionService;
-        $this->relationHandlerService = $relationHandlerService;
+        $this->request                     = $request;
+        $this->queryFilterHandler          = $filterHandlerService;
+        $this->relationAdditionService     = $relationAdditionService;
+        $this->relationHandlerService      = $relationHandlerService;
         $this->columnSortingHandlerService = $columnSortingHandlerService;
     }
 
@@ -103,7 +103,7 @@ abstract class ApiController extends Controller
             foreach ($sortingColumns as $column => $direction) {
                 $builder->orderBy($column, $direction);
             }
-        }else{
+        } else {
             $builder->latest();
         }
 
@@ -130,10 +130,10 @@ abstract class ApiController extends Controller
     }
 
     /**
-     * @param ReferencedModel $model
-     * @return ReferencedModel $model
+     * @param Model $model
+     * @return Model $model
      */
-    protected function getSingleResource(ReferencedModel $model) : ReferencedModel
+    protected function getSingleResource(Model $model): Model
     {
         // Load related resource
         $loadRelations = $this->relationAdditionService->getArrayOfRelations();
@@ -169,11 +169,11 @@ abstract class ApiController extends Controller
     }
 
     /**
-     * @param ReferencedModel $model
+     * @param Model $model
      * @param string $relation
-     * @return ReferencedModel $model
+     * @return Model $model
      */
-    protected function getRelatedResourceCollection(ReferencedModel $model, string $relation): ReferencedModel
+    protected function getRelatedResourceCollection(Model $model, string $relation): Model
     {
         // get unlimited results
         if ($this->request->unlimitedPaginatedResultsRequested()) {
@@ -203,14 +203,14 @@ abstract class ApiController extends Controller
      * @param int $statusCode
      * @return JsonResponse
      */
-    protected function getSuccessResponse(string $successMessage, int $statusCode = Response::HTTP_OK) : JsonResponse
+    protected function getSuccessResponse(string $successMessage, int $statusCode = Response::HTTP_OK): JsonResponse
     {
         return JsonResponse::create([
             'data' => [
-                    'status' => 'success',
-                    'successMessage' => $successMessage
-                ]
-            ], $statusCode);
+                'status' => 'success',
+                'successMessage' => $successMessage
+            ]
+        ], $statusCode);
     }
 
     /**
@@ -218,13 +218,13 @@ abstract class ApiController extends Controller
      * @param int $statusCode
      * @return JsonResponse
      */
-    protected function getFailResponse(string $failMessage, int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR) : JsonResponse
+    protected function getFailResponse(string $failMessage, int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         return JsonResponse::create([
             'data' => [
-                    'status' => 'fail',
-                    'failMessage' => $failMessage
-                ]
-            ], $statusCode);
+                'status' => 'fail',
+                'failMessage' => $failMessage
+            ]
+        ], $statusCode);
     }
 }

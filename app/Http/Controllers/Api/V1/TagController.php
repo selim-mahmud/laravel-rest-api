@@ -66,7 +66,7 @@ class TagController extends ApiController
             )
         );
 
-        $this->tag = $tag;
+        $this->tag            = $tag;
         $this->tagTransformer = $tagTransformer;
     }
 
@@ -85,23 +85,23 @@ class TagController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param string $reference
+     * @param string $id
      * @return ResourceTag
      */
-    public function show($reference) : ResourceTag
+    public function show(string $id): ResourceTag
     {
-        $model = $this->tag->findByReferenceOrFail($reference);
+        $model = $this->tag->findOrFail(decrypt($id));
         return new ResourceTag($this->getSingleResource($model));
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return QuestionCollection
      */
-    public function getQuestions(string $reference) : QuestionCollection
+    public function getQuestions(string $id): QuestionCollection
     {
         /** @var Tag $tag */
-        $tag = $this->tag->findByReferenceOrFail($reference);
+        $tag = $this->tag->findOrFail(decrypt($id));
         $tag = $this->getRelatedResourceCollection($tag, Tag::RELATION_QUESTIONS);
         return new QuestionCollection($tag->questions);
     }
@@ -112,9 +112,8 @@ class TagController extends ApiController
      */
     public function store(StoreTag $request): JsonResponse
     {
-        $imputs                      = $this->tagTransformer->transformInputs($request->all());
-        $imputs[Tag::SLUG]      = str_slug($imputs[Tag::NAME]);
-        $imputs[Tag::REFERENCE] = $this->tag->generateUniqueReference();
+        $imputs            = $this->tagTransformer->transformInputs($request->all());
+        $imputs[Tag::SLUG] = str_slug($imputs[Tag::NAME]);
 
         try {
 
@@ -130,10 +129,10 @@ class TagController extends ApiController
 
     /**
      * @param Request $request
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function update(Request $request, $reference): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -141,7 +140,7 @@ class TagController extends ApiController
         );
         $jsonValidator->validate();
 
-        $question = $this->tag->findByReferenceOrFail($reference);
+        $question = $this->tag->findOrFail(decrypt($id));
         $data     = $this->tagTransformer->transformInputs($request->all());
         $question->fill($data);
 
@@ -153,12 +152,12 @@ class TagController extends ApiController
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function destroy($reference): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
-        $tag = $this->tag->findByReferenceOrFail($reference);
+        $tag = $this->tag->findOrFail(decrypt($id));
 
         if (!$tag->delete()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
@@ -185,7 +184,6 @@ class TagController extends ApiController
     {
         return [
             Tag::ID,
-            Tag::REFERENCE,
             Tag::NAME,
             Tag::SLUG,
             Tag::ACTIVE,
@@ -199,7 +197,6 @@ class TagController extends ApiController
     {
         return [
             Tag::ID,
-            Tag::REFERENCE,
             Tag::NAME,
             Tag::SLUG,
             Tag::ACTIVE,

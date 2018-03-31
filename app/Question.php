@@ -13,7 +13,6 @@ use Illuminate\Support\Collection;
  *
  * @package App
  * @property int $id
- * @property string $reference
  * @property int $user_id
  * @property string $title
  * @property string $slug
@@ -27,10 +26,9 @@ use Illuminate\Support\Collection;
  * @property User $user
  * @property Collection $tags
  */
-class Question extends ReferencedModel
+class Question extends Model
 {
     const ID = 'id';
-    const REFERENCE = 'reference';
     const USER_ID = 'user_id';
     const TITLE = 'title';
     const SLUG = 'slug';

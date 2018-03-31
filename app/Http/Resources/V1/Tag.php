@@ -23,7 +23,7 @@ class Tag extends Resource
     public function toArray($request)
     {
         return [
-            self::ID => $this->{ModelTag::REFERENCE},
+            self::ID => encrypt($this->{ModelTag::ID}),
             self::NAME => $this->{ModelTag::NAME},
             self::SLUG => $this->{ModelTag::SLUG},
             self::ACTIVE => (boolean) $this->{ModelTag::ACTIVE},

@@ -13,7 +13,7 @@ class QuestionTransformer
     public function getTransformationMap() : array
     {
         return [
-            ResourceQuestion::ID => Question::REFERENCE,
+            ResourceQuestion::ID => Question::ID,
             ResourceQuestion::USER_ID => Question::USER_ID,
             ResourceQuestion::TITLE => Question::TITLE,
             ResourceQuestion::SLUG => Question::SLUG,

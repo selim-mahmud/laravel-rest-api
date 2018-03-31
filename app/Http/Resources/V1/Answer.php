@@ -28,7 +28,7 @@ class Answer extends Resource
     {
 
         return [
-            self::ID => $this->{ModelAnswer::REFERENCE},
+            self::ID => encrypt($this->{ModelAnswer::ID}),
             self::USER_ID => $this->{ModelAnswer::USER_ID},
             self::USER_ID => $this->{ModelAnswer::USER_ID},
             self::QUESTION_ID => $this->{ModelAnswer::QUESTION_ID},

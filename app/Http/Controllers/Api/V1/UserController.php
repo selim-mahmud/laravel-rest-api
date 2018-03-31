@@ -86,35 +86,35 @@ class UserController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param string $reference
+     * @param string $id
      * @return ResourceUser
      */
-    public function show($reference): ResourceUser
+    public function show(string $id): ResourceUser
     {
-        $model = $this->user->findByReferenceOrFail($reference);
+        $model = $this->user->findOrFail(decrypt($id));
         return new ResourceUser($this->getSingleResource($model));
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return QuestionCollection
      */
-    public function getQuestions(string $reference): QuestionCollection
+    public function getQuestions(string $id): QuestionCollection
     {
         /** @var User $user */
-        $user = $this->user->findByReferenceOrFail($reference);
+        $user = $this->user->findOrFail(decrypt($id));
         $user = $this->getRelatedResourceCollection($user, User::RELATION_QUESTIONS);
         return new QuestionCollection($user->questions);
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return AnswerCollection
      */
-    public function getAnswers(string $reference): AnswerCollection
+    public function getAnswers(string $id): AnswerCollection
     {
         /** @var User $user */
-        $user = $this->user->findByReferenceOrFail($reference);
+        $user = $this->user->findOrFail(decrypt($id));
         $user = $this->getRelatedResourceCollection($user, User::RELATION_ANSWERS);
         return new AnswerCollection($user->answers);
     }
@@ -126,8 +126,7 @@ class UserController extends ApiController
     public function store(StoreUser $request): JsonResponse
     {
         $request->merge([ResourceUser::PASSWORD => app('hash')->make($request->{ResourceUser::PASSWORD})]);
-        $inputs                  = $this->userTransformer->transformInputs($request->all());
-        $inputs[User::REFERENCE] = $this->user->generateUniqueReference();
+        $inputs = $this->userTransformer->transformInputs($request->all());
 
         try {
 
@@ -143,10 +142,10 @@ class UserController extends ApiController
 
     /**
      * @param Request $request
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function update(Request $request, $reference)
+    public function update(Request $request, string $id)
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -154,7 +153,7 @@ class UserController extends ApiController
         );
         $jsonValidator->validate();
 
-        $user = $this->user->findByReferenceOrFail($reference);
+        $user = $this->user->findOrFail(decrypt($id));
 
         if ($request->has(ResourceUser::PASSWORD)) {
             $request->merge([ResourceUser::PASSWORD => app('hash')->make($request->{ResourceUser::PASSWORD})]);
@@ -188,7 +187,7 @@ class UserController extends ApiController
 
         $user = $this->loginAttempt($request->get(ResourceUser::EMAIL), $request->get(ResourceUser::PASSWORD));
 
-        if($user){
+        if ($user) {
             return new ResourceUser($user);
         }
 
@@ -204,8 +203,8 @@ class UserController extends ApiController
     {
         $user = $this->user->where(User::EMAIL, $email)->first();
 
-        if($user){
-            if(password_verify($password, $user->password)){
+        if ($user) {
+            if (password_verify($password, $user->password)) {
                 return $user;
             }
         }
@@ -214,12 +213,12 @@ class UserController extends ApiController
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function destroy($reference): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
-        $user = $this->user->findByReferenceOrFail($reference);
+        $user = $this->user->findOrFail(decrypt($id));
 
         if (!$user->delete()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
@@ -250,7 +249,6 @@ class UserController extends ApiController
     {
         return [
             User::ID,
-            User::REFERENCE,
             User::NAME,
             User::EMAIL,
             User::ACTIVATION_TOKEN,
@@ -265,7 +263,6 @@ class UserController extends ApiController
     {
         return [
             User::ID,
-            User::REFERENCE,
             User::NAME,
             User::EMAIL,
             User::ACTIVATION_TOKEN,

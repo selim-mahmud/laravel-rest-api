@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -14,10 +15,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $slug
  * @property string $active
  */
-class Tag extends ReferencedModel
+class Tag extends Model
 {
     const ID = 'id';
-    const REFERENCE = 'reference';
     const NAME = 'name';
     const SLUG = 'slug';
     const ACTIVE = 'active';

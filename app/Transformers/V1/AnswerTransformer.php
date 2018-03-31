@@ -13,7 +13,7 @@ class AnswerTransformer
     public function getTransformationMap() : array
     {
         return [
-            ResourceAnswer::ID => Answer::REFERENCE,
+            ResourceAnswer::ID => Answer::ID,
             ResourceAnswer::USER_ID => Answer::USER_ID,
             ResourceAnswer::USER_ID => Answer::USER_ID,
             ResourceAnswer::QUESTION_ID => Answer::QUESTION_ID,

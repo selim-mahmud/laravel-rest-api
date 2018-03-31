@@ -13,7 +13,7 @@ class TagTransformer
     public function getTransformationMap() : array
     {
         return [
-            ResourceTag::ID => Tag::REFERENCE,
+            ResourceTag::ID => Tag::ID,
             ResourceTag::NAME => Tag::NAME,
             ResourceTag::SLUG => Tag::SLUG,
             ResourceTag::ACTIVE => Tag::ACTIVE,

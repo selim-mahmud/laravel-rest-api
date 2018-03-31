@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @package App
  * @property int $id
- * @property string $reference
  * @property int $question_id
  * @property int $user_id
  * @property string $description
@@ -17,10 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $up_vote
  * @property int $down_vote
  */
-class Answer extends ReferencedModel
+class Answer extends Model
 {
     const ID = 'id';
-    const REFERENCE = 'reference';
     const QUESTION_ID = 'question_id';
     const USER_ID = 'user_id';
     const DESCRIPTION = 'description';

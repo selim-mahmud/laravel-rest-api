@@ -13,7 +13,7 @@ class UserTransformer
     public function getTransformationMap() : array
     {
         return [
-            ResourceUser::ID => User::REFERENCE,
+            ResourceUser::ID => User::ID,
             ResourceUser::NAME => User::NAME,
             ResourceUser::EMAIL => User::EMAIL,
             ResourceUser::PASSWORD => User::PASSWORD,

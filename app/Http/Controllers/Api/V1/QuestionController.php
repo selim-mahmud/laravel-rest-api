@@ -50,7 +50,8 @@ class QuestionController extends ApiController
         ApiRelationAdditionHandler $relationAdditionHandler,
         ApiRelationFilterHandler $relationFilterHandler,
         ApiColumnSortingHandler $columnSortingHandler
-    ) {
+    )
+    {
         parent::__construct(
             $request,
             $columnFilterHandler->setFilterableFields(
@@ -85,47 +86,47 @@ class QuestionController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param string $reference
+     * @param string $id
      * @return ResourceQuestion
      */
-    public function show(string $reference): ResourceQuestion
+    public function show(string $id): ResourceQuestion
     {
-        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->question->findOrFail(decrypt($id));
         return new ResourceQuestion($this->getSingleResource($question));
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return AnswerCollection
      */
-    public function getAnswers(string $reference): AnswerCollection
+    public function getAnswers(string $id): AnswerCollection
     {
         /** @var Question $question */
-        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->question->findOrFail(decrypt($id));
         $question = $this->getRelatedResourceCollection($question, Question::RELATION_ANSWERS);
         return new AnswerCollection($question->answers);
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return TagCollection
      */
-    public function getTags(string $reference): TagCollection
+    public function getTags(string $id): TagCollection
     {
         /** @var Question $question */
-        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->question->findOrFail(decrypt($id));
         $question = $this->getRelatedResourceCollection($question, Question::RELATION_TAGS);
         return new TagCollection($question->tags);
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return ResourceUser
      */
-    public function getUser(string $reference): ResourceUser
+    public function getUser(string $id): ResourceUser
     {
         /** @var Question $question */
-        $question = $this->question->findByReferenceOrFail($reference)->load(Question::RELATION_USER);
+        $question = $this->question->findOrFail(decrypt($id))->load(Question::RELATION_USER);
         return new ResourceUser($question->user);
     }
 
@@ -135,9 +136,8 @@ class QuestionController extends ApiController
      */
     public function store(StoreQuestion $request): JsonResponse
     {
-        $inputs                      = $this->questionTransformer->transformInputs($request->all());
-        $inputs[Question::REFERENCE] = $this->question->generateUniqueReference();
-        $inputs[Question::SLUG]      = str_slug($inputs[Question::TITLE]);
+        $inputs                 = $this->questionTransformer->transformInputs($request->all());
+        $inputs[Question::SLUG] = str_slug($inputs[Question::TITLE]);
 
         $tags = $inputs[Question::TAGS];
         unset($inputs[Question::TAGS]);
@@ -155,10 +155,10 @@ class QuestionController extends ApiController
 
     /**
      * @param Request $request
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function update(Request $request, $reference): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         $jsonValidator = ValidatorFacade::make(
             $request->all(),
@@ -167,7 +167,7 @@ class QuestionController extends ApiController
         $jsonValidator->validate();
 
         /** @var Question $question */
-        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->question->findOrFail(decrypt($id));
         $inputs   = $this->questionTransformer->transformInputs($request->all());
 
         if (isset($inputs[Question::TAGS])) {
@@ -189,12 +189,12 @@ class QuestionController extends ApiController
     }
 
     /**
-     * @param $reference
+     * @param string $id
      * @return JsonResponse
      */
-    public function destroy($reference): JsonResponse
+    public function destroy(string $id): JsonResponse
     {
-        $question = $this->question->findByReferenceOrFail($reference);
+        $question = $this->question->findOrFail(decrypt($id));
 
         if (!$question->delete()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
@@ -228,7 +228,6 @@ class QuestionController extends ApiController
     {
         return [
             Question::ID,
-            Question::REFERENCE,
             Question::USER_ID,
             Question::TITLE,
             Question::SLUG,
@@ -247,7 +246,6 @@ class QuestionController extends ApiController
     {
         return [
             Question::ID,
-            Question::REFERENCE,
             Question::USER_ID,
             Question::TITLE,
             Question::SLUG,
