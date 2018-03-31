@@ -30,8 +30,7 @@ class Answer extends Resource
         return [
             self::ID => encrypt($this->{ModelAnswer::ID}),
             self::USER_ID => encrypt($this->{ModelAnswer::USER_ID}),
-            self::USER_ID => encrypt($this->{ModelAnswer::USER_ID}),
-            self::QUESTION_ID => $this->{ModelAnswer::QUESTION_ID},
+            self::QUESTION_ID => encrypt($this->{ModelAnswer::QUESTION_ID}),
             self::DESCRIPTION => $this->{ModelAnswer::DESCRIPTION},
             $this->mergeWhen($request->query(ApiRequest::QUERY_PARAM_FIELDS) === ApiRequest::QUERY_PARAM_FIELDS_ALL,
                 [
