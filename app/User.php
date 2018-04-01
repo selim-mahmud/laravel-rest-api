@@ -43,8 +43,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $guarded = [
-        self::ID,
-        self::PASSWORD,
+        self::ID
     ];
 
     /**
