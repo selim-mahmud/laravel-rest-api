@@ -108,7 +108,7 @@ class UserController extends ApiController
      */
     public function getQuestions(string $id): QuestionCollection
     {
-        $queryBuilder = $this->question->newQuery()->where(User::ID, decrypt($id));
+        $queryBuilder = $this->question->newQuery()->where(Question::USER_ID, decrypt($id));
         return new QuestionCollection($this->getResourceCollection($queryBuilder));
     }
 
