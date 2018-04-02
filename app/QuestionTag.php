@@ -15,4 +15,6 @@ class QuestionTag extends Model
 {
     const QUESTION_ID = 'question_id';
     const TAG_ID = 'tag_id';
+
+    protected $table = 'question_tag';
 }

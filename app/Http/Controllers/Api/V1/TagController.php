@@ -8,6 +8,8 @@ use App\Http\Requests\StoreTag;
 use App\Http\Resources\V1\QuestionCollection;
 use App\Http\Resources\V1\TagCollection;
 use App\Http\Resources\V1\Tag as ResourceTag;
+use App\Question;
+use App\QuestionTag;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
@@ -26,6 +28,12 @@ class TagController extends ApiController
     /**@var Tag $tag */
     protected $tag;
 
+    /**@var Question $question */
+    protected $question;
+
+    /**@var QuestionTag $questionTag */
+    protected $questionTag;
+
     /**@var TagTransformer $tagTransformer */
     protected $tagTransformer;
 
@@ -34,6 +42,8 @@ class TagController extends ApiController
      *
      * @param ApiRequest $request
      * @param Tag $tag
+     * @param Question $question
+     * @param QuestionTag $questionTag
      * @param TagTransformer $tagTransformer
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
@@ -43,6 +53,8 @@ class TagController extends ApiController
     public function __construct(
         ApiRequest $request,
         Tag $tag,
+        Question $question,
+        QuestionTag $questionTag,
         TagTransformer $tagTransformer,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
@@ -67,6 +79,8 @@ class TagController extends ApiController
         );
 
         $this->tag            = $tag;
+        $this->question       = $question;
+        $this->questionTag    = $questionTag;
         $this->tagTransformer = $tagTransformer;
     }
 
@@ -100,10 +114,10 @@ class TagController extends ApiController
      */
     public function getQuestions(string $id): QuestionCollection
     {
-        /** @var Tag $tag */
-        $tag = $this->tag->findOrFail(decrypt($id));
-        $tag = $this->getRelatedResourceCollection($tag, Tag::RELATION_QUESTIONS);
-        return new QuestionCollection($tag->questions);
+
+        $questionTag = $this->questionTag->newQuery()->where(QuestionTag::TAG_ID, decrypt($id))->get();
+        $queryBuilder = $this->question->newQuery()->whereIn(Question::ID, $questionTag->pluck(QuestionTag::QUESTION_ID));
+        return new QuestionCollection($this->getResourceCollection($queryBuilder));
     }
 
     /**
@@ -211,6 +225,9 @@ class TagController extends ApiController
 
         return [
             Tag::RELATION_QUESTIONS,
+            Question::RELATION_USER,
+            Question::RELATION_ANSWERS,
+            Question::RELATION_TAGS
         ];
     }
 }
