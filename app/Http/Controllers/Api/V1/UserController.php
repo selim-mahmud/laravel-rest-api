@@ -9,6 +9,7 @@ use App\Http\Resources\V1\AnswerCollection;
 use App\Http\Resources\V1\QuestionCollection;
 use App\Http\Resources\V1\UserCollection;
 use App\Http\Resources\V1\User as ResourceUser;
+use App\Question;
 use App\Services\ApiColumnFilterHandler;
 use App\Services\ApiColumnSortingHandler;
 use App\Services\ApiRelationAdditionHandler;
@@ -28,6 +29,9 @@ class UserController extends ApiController
     /**@var User $user */
     protected $user;
 
+    /**@var Question $question */
+    protected $question;
+
     /**@var UserTransformer $userTransformer */
     protected $userTransformer;
 
@@ -36,6 +40,7 @@ class UserController extends ApiController
      *
      * @param ApiRequest $request
      * @param User $user
+     * @param Question $question
      * @param UserTransformer $userTransformer
      * @param ApiColumnFilterHandler $columnFilterHandler
      * @param ApiRelationAdditionHandler $relationAdditionHandler
@@ -45,6 +50,7 @@ class UserController extends ApiController
     public function __construct(
         ApiRequest $request,
         User $user,
+        Question $question,
         UserTransformer $userTransformer,
         ApiColumnFilterHandler $columnFilterHandler,
         ApiRelationAdditionHandler $relationAdditionHandler,
@@ -69,6 +75,7 @@ class UserController extends ApiController
         );
 
         $this->user            = $user;
+        $this->question        = $question;
         $this->userTransformer = $userTransformer;
     }
 
@@ -101,10 +108,8 @@ class UserController extends ApiController
      */
     public function getQuestions(string $id): QuestionCollection
     {
-        /** @var User $user */
-        $user = $this->user->findOrFail(decrypt($id));
-        $user = $this->getRelatedResourceCollection($user, User::RELATION_QUESTIONS);
-        return new QuestionCollection($user->questions);
+        $queryBuilder = $this->question->newQuery()->where(User::ID, decrypt($id));
+        return new QuestionCollection($this->getResourceCollection($queryBuilder));
     }
 
     /**
@@ -278,7 +283,10 @@ class UserController extends ApiController
 
         return [
             User::RELATION_QUESTIONS,
-            User::RELATION_ANSWERS
+            User::RELATION_ANSWERS,
+            Question::RELATION_USER,
+            Question::RELATION_ANSWERS,
+            Question::RELATION_TAGS
         ];
     }
 }
