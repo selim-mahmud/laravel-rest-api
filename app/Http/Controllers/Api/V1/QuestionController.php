@@ -136,10 +136,12 @@ class QuestionController extends ApiController
      */
     public function store(StoreQuestion $request): JsonResponse
     {
+        $request->merge([ResourceQuestion::USER_ID => decrypt($request->{ResourceQuestion::USER_ID})]);
         $inputs                 = $this->questionTransformer->transformInputs($request->all());
         $inputs[Question::SLUG] = str_slug($inputs[Question::TITLE]);
 
         $tags = $inputs[Question::TAGS];
+        array_map(function($el) { return decrypt($el); }, $tags);
         unset($inputs[Question::TAGS]);
 
         try {
