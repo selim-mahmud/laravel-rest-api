@@ -27,7 +27,7 @@ class ValidatorService
      */
     public function validateTags(string $attribute, array $value, array $parameters, Validator $validator): bool
     {
-        array_map(function($el) { return decrypt($el); }, $value);
+        $value = array_map(function($el) { return decrypt($el); }, $value);
 
         $tagsCount = Tag::find($value)->count();
 

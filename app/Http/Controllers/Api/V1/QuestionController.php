@@ -140,8 +140,7 @@ class QuestionController extends ApiController
         $inputs                 = $this->questionTransformer->transformInputs($request->all());
         $inputs[Question::SLUG] = str_slug($inputs[Question::TITLE]);
 
-        $tags = $inputs[Question::TAGS];
-        array_map(function($el) { return decrypt($el); }, $tags);
+        $tags = array_map(function($el) { return decrypt($el); }, $inputs[Question::TAGS]);
         unset($inputs[Question::TAGS]);
 
         try {
