@@ -123,6 +123,8 @@ class AnswerController extends ApiController
      */
     public function store(StoreAnswer $request): JsonResponse
     {
+        $request->merge([ResourceAnswer::USER_ID => decrypt($request->{ResourceAnswer::USER_ID})]);
+        $request->merge([ResourceAnswer::QUESTION_ID => decrypt($request->{ResourceAnswer::QUESTION_ID})]);
         $imputs = $this->answerTransformer->transformInputs($request->all());
 
         try {

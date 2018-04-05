@@ -25,8 +25,8 @@ class StoreAnswer extends FormRequest
     public function rules()
     {
         return [
-            ResourceAnswer::QUESTION_ID => 'required|integer',
-            ResourceAnswer::USER_ID => 'required|integer',
+            ResourceAnswer::QUESTION_ID => 'required|string',
+            ResourceAnswer::USER_ID => 'required|string',
             ResourceAnswer::DESCRIPTION => 'required|string|max:65535',
         ];
     }
