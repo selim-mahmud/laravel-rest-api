@@ -188,8 +188,8 @@ class AnswerController extends ApiController
             ResourceAnswer::USER_ID => 'integer',
             ResourceAnswer::DESCRIPTION => 'string|max:65535',
             ResourceAnswer::EXCEPTED => 'boolean',
-            ResourceAnswer::UP_VOTE => 'boolean',
-            ResourceAnswer::DOWN_VOTE => 'boolean',
+            ResourceAnswer::UP_VOTE => 'integer',
+            ResourceAnswer::DOWN_VOTE => 'integer',
         ];
     }
 

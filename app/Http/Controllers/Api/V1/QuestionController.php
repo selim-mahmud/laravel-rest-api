@@ -216,8 +216,8 @@ class QuestionController extends ApiController
             ResourceQuestion::FEATURED => 'boolean',
             ResourceQuestion::STICKY => 'boolean',
             ResourceQuestion::SOLVED => 'boolean',
-            ResourceQuestion::UP_VOTE => 'boolean',
-            ResourceQuestion::DOWN_VOTE => 'boolean',
+            ResourceQuestion::UP_VOTE => 'integer',
+            ResourceQuestion::DOWN_VOTE => 'integer',
             ResourceQuestion::TAGS => 'tags',
         ];
     }
