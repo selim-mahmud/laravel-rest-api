@@ -19,7 +19,7 @@ use App\Transformers\V1\AnswerTransformer;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 
 class AnswerController extends ApiController
@@ -153,8 +153,8 @@ class AnswerController extends ApiController
         $jsonValidator->validate();
 
         $answer = $this->answer->findOrFail(decrypt($id));
-        $data   = $this->answerTransformer->transformInputs($request->all());
-        $answer->fill($data);
+        $inputs   = $this->answerTransformer->transformInputs($request->all());
+        $answer->fill($inputs);
 
         if (!$answer->save()) {
             return $this->getFailResponse(StatusMessage::COMMON_FAIL);
@@ -184,8 +184,8 @@ class AnswerController extends ApiController
     protected function getValiadationRules(): array
     {
         return [
-            ResourceAnswer::QUESTION_ID => 'integer',
-            ResourceAnswer::USER_ID => 'integer',
+            ResourceAnswer::QUESTION_ID => 'string',
+            ResourceAnswer::USER_ID => 'string',
             ResourceAnswer::DESCRIPTION => 'string|max:65535',
             ResourceAnswer::EXCEPTED => 'boolean',
             ResourceAnswer::UP_VOTE => 'integer',
